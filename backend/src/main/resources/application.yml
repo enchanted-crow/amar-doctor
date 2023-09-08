@@ -1,9 +1,9 @@
-server:
-  port: 3000
+#server:
+#  port: 3000
 
 spring:
   datasource:
-    url: jdbc:postgresql://dpg-cjstm7qbgj9c73cccdbg-a/amardoctordb
+    url: jdbc:postgresql://dpg-cjstm7qbgj9c73cccdbg-a.singapore-postgres.render.com/amardoctordb
     username: amardoctor
     password: TCPYWLgTUzYbPj0u6JYarV11UDViPqJM
   jpa:
