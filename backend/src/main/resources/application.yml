@@ -3,7 +3,7 @@
 
 spring:
   datasource:
-    url: jdbc:postgresql://dpg-cjstm7qbgj9c73cccdbg-a.singapore-postgres.render.com/amardoctordb
+    url: jdbc:postgresql://dpg-cjstm7qbgj9c73cccdbg-a/amardoctordb
     username: amardoctor
     password: TCPYWLgTUzYbPj0u6JYarV11UDViPqJM
   jpa:
