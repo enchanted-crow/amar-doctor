@@ -1,0 +1,18 @@
+server:
+  port: 3000
+
+spring:
+  datasource:
+    url: jdbc:postgresql://dpg-cjstm7qbgj9c73cccdbg-a.singapore-postgres.render.com/amardoctordb
+    username: amardoctor
+    password: TCPYWLgTUzYbPj0u6JYarV11UDViPqJM
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+  main:
+    web-application-type: servlet
