@@ -1,5 +1,5 @@
 import React from 'react'
-import { dict } from '@/src/global/translation'
+import { dict } from '@/global/translation'
 import Link from 'next/link'
 
 const Login = () => {

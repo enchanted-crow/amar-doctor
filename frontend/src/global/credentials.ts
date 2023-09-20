@@ -1,6 +1,6 @@
 export class LoginCredentials {
-    private static _isLoggedIn: boolean;
-    private static _authToken: string;
+    private static _isLoggedIn: boolean = false;
+    private static _authToken: string = "";
 
     public static get authToken(): string {
         return LoginCredentials._authToken;

@@ -1,3 +1,5 @@
+'use client';
+
 import Link from "next/link";
 import { LoginCredentials } from "@/global/credentials";
 import { dict } from "@/global/translation";
@@ -45,7 +47,7 @@ export default function Home() {
 }
 
 // gets executed at build time
-export async function getStaticProps() {
-    LoginCredentials.isLoggedIn = false;
-    LoginCredentials.authToken = "";
-}
+// export async function getServerSideProps() {
+//     LoginCredentials.isLoggedIn = false;
+//     LoginCredentials.authToken = "";
+// }
