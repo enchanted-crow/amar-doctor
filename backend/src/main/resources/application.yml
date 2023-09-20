@@ -3,7 +3,7 @@
 
 spring:
   datasource:
-    url: jdbc:postgresql://dpg-cjstm7qbgj9c73cccdbg-a/amardoctordb
+    url: jdbc:postgresql://dpg-cjstm7qbgj9c73cccdbg-a.singapore-postgres.render.com/amardoctordb
     username: amardoctor
     password: TCPYWLgTUzYbPj0u6JYarV11UDViPqJM
   jpa:
@@ -11,6 +11,8 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
+        type:
+          wrapper_array_handling: ALLOW
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: true

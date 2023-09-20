@@ -24,7 +24,12 @@ public class AmarDoctorApiApplication {
 		FilterRegistrationBean<AuthFilter> registrationBean = new FilterRegistrationBean<>();
 		AuthFilter authFilter = new AuthFilter();
 		registrationBean.setFilter(authFilter);
-		registrationBean.addUrlPatterns("/api/todo/*");
+		registrationBean.addUrlPatterns("/api/doctor/profile");
+		registrationBean.addUrlPatterns("/api/doctor/delete");
+		registrationBean.addUrlPatterns("/api/patient/profile");
+		registrationBean.addUrlPatterns("/api/patient/delete");
+		registrationBean.addUrlPatterns("/api/healthCenter/profile");
+		registrationBean.addUrlPatterns("/api/healthCenter/delete");
 		return registrationBean;
 	}
 
