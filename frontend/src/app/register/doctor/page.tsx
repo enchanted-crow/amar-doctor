@@ -3,7 +3,7 @@
 
 import { ChangeEvent, SetStateAction, useState } from 'react';
 import Image from 'next/image';
-import { dict } from '@/global/translation';
+import { dict } from '@/src/global/translation';
 import Link from 'next/link';
 
 const departments = ["সিলেক্ট করুন", "A", "hajaribag"];
