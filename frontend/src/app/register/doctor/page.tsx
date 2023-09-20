@@ -33,7 +33,6 @@ export default function RegisterDoctor() {
     const [bmdcRegYear, setBmdcRegYear] = useState('');
     const [chamberLocation, setChamberLocation] = useState('');
     const [bio, setBio] = useState('');
-
     const [profileImage, setProfileImage] = useState('../../../../public/images/signup/profile_picture_default.jpg');
 
     const [timeSlots, setTimeSlots] = useState([{ id: 1 }]); // Initial state with one div
@@ -376,57 +375,74 @@ export default function RegisterDoctor() {
 
                             <div className="sm:col-span-9">
                                 {timeSlots.map((slot) => (
-                                    <div key={slot.id} className="sm:flex">
-                                        {/* From */}
+                                    <div key={slot.id} className="flex flex-col w-full">
+                                        {/* First three selects in one line */}
                                         <div className="flex w-full">
                                             <select
-                                                className="mr-3 flex py-2 px-3 pr-8 block w-full border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                                                className="flex-grow py-2 px-3 mr-2 border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
+                                            >
                                                 {days.map(function (data) {
-                                                    return (
-                                                        <option>{data}</option>
-                                                    )
+                                                    return <option key={data}>{data}</option>;
                                                 })}
                                             </select>
+                                            <div className="py-2 mr-2">শুরু</div>
                                             <select
-                                                className="mr-1.5 flex py-2 px-3 block w-full border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                                                className="flex-grow py-2 px-3 mr-2 border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
+                                            >
                                                 {times.map(function (data) {
-                                                    return (
-                                                        <option>{data}</option>
-                                                    )
+                                                    return <option key={data}>{data}</option>;
                                                 })}
                                             </select>
                                             <select
-                                                className="mr-1.5 flex py-2 px-3 block w-full border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                                                className="flex-grow py-2 px-3 pr-4 mr-2 border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
+                                            >
                                                 <option>AM/PM</option>
                                                 <option>AM</option>
                                                 <option>PM</option>
                                             </select>
-                                            <div className="mr-1.5 py-2">
-                                                থেকে
-                                            </div>
-                                            {/* To */}
-                                            <select
-                                                className="mr-1.5 only:flex py-2 px-3 block w-full border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
-                                                {times.map(function (data) {
-                                                    return (
-                                                        <option>{data}</option>
-                                                    )
-                                                })}
-                                            </select>
-                                            <select
-                                                className="mr-1.5 flex py-2 px-3 block w-full border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-50https://nextjs.org/docs/app/building-your-application/rendering0 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
-                                                <option>AM/PM</option>
-                                                <option>AM</option>
-                                                <option>PM</option>
-                                            </select>
-                                            {/* Button for removing the current div */}
-                                            {timeSlots.length > 1 && (
-                                                <button type="button" className="sm:px-2 py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold text-red-200 hover:text-red-500 focus:outline-none focus:ring-2 ring-offset-white transition-all text-sm"
-                                                    onClick={() => removeTimeSlot(slot.id)} >
-                                                    X
-                                                </button>)
-                                            }
                                         </div>
+
+                                        {/* Next elements in the line below */}
+                                        <>
+                                            <div className="flex w-full mt-2">
+                                                <div className="py-2 mr-2">শেষ</div>
+                                                <select
+                                                    className="flex-grow py-2 px-3 mr-2 border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
+                                                >
+                                                    {times.map(function (data) {
+                                                        return <option key={data}>{data}</option>;
+                                                    })}
+                                                </select>
+                                                <select
+                                                    className="flex-grow py-2 px-3 pr-2 mr-2 border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-50 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
+                                                >
+                                                    <option>AM/PM</option>
+                                                    <option>AM</option>
+                                                    <option>PM</option>
+                                                </select>
+                                                <div className="h-full flex-shrink mr-2">
+                                                    <input
+                                                        id="af-account-time-slot-person-limit"
+                                                        type="text"
+                                                        className={classnames.textbox}
+                                                        placeholder="সর্বোচ্চ"
+                                                    />
+                                                </div>
+                                                <div className="py-2 mr-2">জন</div>
+                                                {/* Button for removing the current div */}
+                                                {timeSlots.length > 1 && (
+                                                    <button
+                                                        type="button"
+                                                        className="px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold text-red-200 hover:text-red-500 focus:outline-none focus:ring-2 ring-offset-white transition-all text-sm"
+                                                        onClick={() => removeTimeSlot(slot.id)}
+                                                    >
+                                                        X
+                                                    </button>
+                                                )}
+                                            </div>
+                                            {timeSlots.length > 1 && (
+                                                <p className='mb-6' />)}
+                                        </>
                                     </div>
                                 ))}
 
