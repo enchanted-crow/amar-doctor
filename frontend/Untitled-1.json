@@ -1,0 +1,69 @@
+{
+    "name": "a",
+    "email": "b@g",
+    "password": "c",
+    "contact_no": "e",
+    "gender": "পুরুষ",
+    "doctor_type": "MBBS",
+    "department": "A",
+    "institution": "g",
+    "designation": "h",
+    "degrees": "i",
+    "bmdc_registration_no": "100",
+    "bmdc_registration_year": "2000",
+    "chamber_location": "pp",
+    "bio": "fb",
+    "time_slot": "[{\"id\":1,\"day\":\"রবিবার\",\"startTime\":\"1\",\"startAmPm\":\"AM\",\"endTime\":\"2\",\"endAmPm\":\"PM\",\"personLimit\":\"1\"},{\"id\":2,\"day\":\"সোমবার\",\"startTime\":\"3\",\"startAmPm\":\"PM\",\"endTime\":\"4\",\"endAmPm\":\"AM\",\"personLimit\":\"2\"}]"
+}
+
+
+
+interface TimeSlot {
+  id: number;
+  day: string;
+  startTime: string;
+  startAmPm: string;
+  endTime: string;
+  endAmPm: string;
+  personLimit: string;
+}
+
+
+{
+    "time_slot": "[{"time":"Sunday_01_00_01_00","max_count":"0"},{"time":"Sunday_06_00_01_00","max_count":"0"}]",
+    "name": "",
+    "email": "g@w",
+    "password": "",
+    "contact_no": "",
+    "gender": "পুরুষ",
+    "doctor_type": "MBBS",
+    "department": "A",
+    "institution": "",
+    "designation": "",
+    "degrees": "",
+    "bmdc_registration_no": "",
+    "bmdc_registration_year": "",
+    "chamber_location": "",
+    "bio": ""
+}
+
+backend recommendations
+- doctor e gender add
+- health center e full address add
+
+frontend recc
+- patient e blood group add
+
+
+{
+    "dob": "\"2000-01-05T00:00:00.000Z\"",
+    "name": "a",
+    "email": "b@w",
+    "password": "c",
+    "contact_no": "e",
+    "sex": "মহিলা",
+    "blood_group": "B-",
+    "division": "পুরুষ",
+    "district": "MBBS",
+    "upozilla": "A"
+}

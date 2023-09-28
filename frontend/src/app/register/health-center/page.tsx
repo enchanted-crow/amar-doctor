@@ -1,19 +1,33 @@
 'use strict';
 'use client';
 
-import { useState, ChangeEvent } from 'react';
+import { useState, ChangeEvent, FormEvent } from 'react';
 import Image from 'next/image';
 import { dict } from '@/global/translation';
 import Link from 'next/link';
 
-const divisions = ["বিভাগ সিলেক্ট করুন", "পুরুষ", "মহিলা", "অন্যান্য"];
-const upozillas = ["সিলেক্ট করুন", "A", "hajaribag"];
-const districts = ["সিলেক্ট করুন", "MBBS", "BDS"];
-const days = ["বার", "রবিবার", "সোমবার", "মঙ্গলবার", "বুধবার", "বৃহস্পতিবার", "শুক্রবার", "শনিবার"];
-const times = ["সময়", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
+const divisions = ["পুরুষ", "মহিলা", "অন্যান্য"];
+const upozillas = ["A", "hajaribag"];
+const districts = ["MBBS", "BDS"];
+const days = ["রবিবার", "সোমবার", "মঙ্গলবার", "বুধবার", "বৃহস্পতিবার", "শুক্রবার", "শনিবার"];
+const times = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 
 const classnames = {
   "textbox": "py-2 px-3 pr-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 placeholder-gray-500 placeholder-opacity-90"
+}
+
+interface TimeSlot {
+  id: number;
+  day: string;
+  startTime: string;
+  startAmPm: string;
+  endTime: string;
+  endAmPm: string;
+  personLimit: string;
+}
+
+interface MapStr2Str {
+  [key: string]: string;
 }
 
 export default function RegisterHCenter() {
@@ -27,15 +41,39 @@ export default function RegisterHCenter() {
   const [district, setDistrict] = useState('');
   const [upozilla, setUpozilla] = useState('');
   const [fullAddress, setFullAddress] = useState('');
-  const [photo, setPhoto] = useState('../../../../public/images/signup/profile_picture_default.jpg');
+  const [photo, setPhoto] = useState('../../../../public/images/signup/building_picture_default.png');
 
-  const [timeSlots, setTimeSlots] = useState([{ id: 1 }]); // Initial state with one div
+  const initialTimeSlots: TimeSlot[] = [
+    {
+      id: 1,
+      day: days[0],
+      startTime: times[0],
+      startAmPm: 'AM',
+      endTime: times[0],
+      endAmPm: 'AM',
+      personLimit: "0",
+    },
+  ];
+  // Use the initialTimeSlots array when initializing state
+  const [timeSlots, setTimeSlots] = useState(initialTimeSlots);
 
   const addTimeSlot = () => {
     // Generate a unique ID for the new div
     const newId = Math.max(...timeSlots.map((slot) => slot.id), 0) + 1;
+
+    const newSlot: TimeSlot =
+    {
+      id: 1,
+      day: days[0],
+      startTime: times[0],
+      startAmPm: 'AM',
+      endTime: times[0],
+      endAmPm: 'AM',
+      personLimit: "0",
+    };
+
     // Add a new div with the generated ID
-    setTimeSlots([...timeSlots, { id: newId }]);
+    setTimeSlots([...timeSlots, newSlot]);
   };
 
   const removeTimeSlot = (idToRemove: number) => {
@@ -45,53 +83,108 @@ export default function RegisterHCenter() {
   };
 
   // Function to handle input field change and update state
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, stateUpdater: (value: string) => void): void => {
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>, stateUpdater: (value: string) => void): void => {
     const value = event.target.value;
     stateUpdater(value);
   };
 
-  // Function to validate required fields
-  const validateFields = () => {
-    if (
-      fullName &&
-      email &&
-      password &&
-      confirmPassword &&
-      phone &&
-      division &&
-      district &&
-      upozilla &&
-      fullAddress
-    ) {
-      return true;
-    }
-    return false;
+  const handleTimeSlotInputChange = (
+    event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    fieldName: string,
+    slotId: number
+  ): void => {
+    const value = event.target.value;
+
+    // Use slotId to find the correct time slot object in the array
+    const updatedTimeSlots = timeSlots.map((slot) =>
+      slot.id === slotId ? { ...slot, [fieldName]: value } : slot
+    );
+
+    // Update the state with the modified timeSlots array
+    setTimeSlots(updatedTimeSlots);
   };
 
-  // Function to handle "Create Account" button click
-  const handleCreateAccountClick = () => {
-    const userData = {
-      fullName,
-      email,
-      password,
-      phone,
-      division,
-      district,
-      upozilla,
-      fullAddress,
-      photo,
+  async function onFormSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    alert("ok")
+
+    const ui2ApiAtrrNameMap: {
+      [key: string
+      ]: string
+    } = {
+      "af-account-full-name": "name",
+      "af-account-email": "email",
+      "af-account-password": "password",
+      "af-account-confirm-password": "d",
+      "af-account-phone": "contact_no",
+      "af-account-division": "division",
+      "af-account-district": "district",
+      "af-account-upozilla": "upozilla",
+      "af-account-full-address": "address",   // not yet in backend
+      // "af-account-timeslots": "time_slot", // this has been handled seperately
     };
-    if (validateFields()) {
-      // Construct a JSON object with the entered data
 
+    function uiTimeslot2Api(ui_timeslot: TimeSlot): string {
+      let dayBn2EnApi: MapStr2Str = {}
 
-      // Do something with the userData JSON object, such as sending it to a server
-      console.log(userData);
-    } else {
-      alert('Please fill in all required fields.');
-      console.log(userData);
+      dayBn2EnApi = {
+        "রবিবার": "Sunday",
+        "সোমবার": "Monday",
+        "মঙ্গলবার": "Tuesday",
+        "বুধবার": "Wednesday",
+        "বৃহস্পতিবার": "Thursday",
+        "শুক্রবার": "Friday",
+        "শনিবার": "Saturday"
+      }
+
+      function time12to24(startTime: string, startAmPm: string): string {
+        let hours: number = +startTime
+        if (startAmPm.toLowerCase() === 'pm' && hours !== 12) {
+          hours += 12;
+        } else if (startAmPm.toLowerCase() === 'am' && hours === 12) {
+          hours = 0;
+        }
+        const formattedHours = hours.toString().padStart(2, '0');
+        return formattedHours
+      }
+
+      let api_timeslot = ""
+      // api_timeslot = ui_timeslot.id.toString();
+      api_timeslot += dayBn2EnApi[ui_timeslot.day]
+      api_timeslot += "_" + time12to24(ui_timeslot.startTime, ui_timeslot.startAmPm) + "_00"
+      api_timeslot += "_" + time12to24(ui_timeslot.endTime, ui_timeslot.endAmPm) + "_00"
+      api_timeslot += "_" + ui_timeslot.personLimit.toString()
+
+      return api_timeslot
     }
-  };
+
+    const formData = new FormData(event.currentTarget)
+
+    let apiTimeslots = []
+    for (let timeSlot of timeSlots) {
+      apiTimeslots.push(uiTimeslot2Api(timeSlot))
+    }
+    const timeSlotsJSON = JSON.stringify(apiTimeslots);
+    formData.append('time_slot', timeSlotsJSON);
+
+    for (const uiAttrName in ui2ApiAtrrNameMap) {
+      let apiAttrName = ui2ApiAtrrNameMap[uiAttrName]
+      let data = formData.get(uiAttrName)?.toString() || ''
+      formData.delete(uiAttrName)
+      if (uiAttrName != "af-account-confirm-password")
+        formData.append(apiAttrName, data)
+    }
+
+    const response = await fetch('/api/health-center/registration', {
+      method: 'POST',
+      body: formData,
+    })
+
+    // Handle response if necessary
+    const data = await response.json()
+    console.log(JSON.stringify(Object.fromEntries(formData)))
+    // console.log(data)
+  }
 
   return (
     <>
@@ -100,7 +193,7 @@ export default function RegisterHCenter() {
         {/* <!-- Card --> */}
         <div className="bg-white rounded-xl shadow p-4 sm:p-7 dark:bg-slate-900">
           <div className="mb-8">
-            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">
+            <h2 className="mb-2 text-xl font-bold text-gray-800 dark:text-gray-200">
               হেলথ সেন্টার রেজিস্ট্রেশন
             </h2>
             <div className="text-sm text-gray-600 dark:text-gray-400">
@@ -108,7 +201,7 @@ export default function RegisterHCenter() {
             </div>
           </div>
 
-          <form>
+          <form onSubmit={(event) => onFormSubmit(event)}>
             {/* <!-- Grid --> */}
             <div className="grid sm:grid-cols-12 gap-2 sm:gap-6">
               <div className="sm:col-span-3">
@@ -183,7 +276,11 @@ export default function RegisterHCenter() {
               {/* <!-- End Col --> */}
 
               <div className="sm:col-span-9">
-                <input id="af-account-email" type="email"
+                <input
+                  id="af-account-email"
+                  name="af-account-email"
+                  type="email"
+                  onChange={(e) => handleInputChange(e, setEmail)}
                   className={classnames.textbox}
                   placeholder={"hope.healthcare@gmail.com"} >
                 </input>
@@ -199,11 +296,19 @@ export default function RegisterHCenter() {
 
               <div className="sm:col-span-9">
                 <div className="space-y-2">
-                  <input id="af-account-password" type="text"
+                  <input
+                    id="af-account-password"
+                    name="af-account-password"
+                    type="text"
+                    onChange={(e) => handleInputChange(e, setPassword)}
                     className={classnames.textbox}
                     placeholder={dict.register_form.doctor.PH_enter_password}>
                   </input>
-                  <input type="text"
+                  <input
+                    id="af-account-confirm-password"
+                    name="af-account-confirm-password"
+                    type="text"
+                    onChange={(e) => handleInputChange(e, setConfirmPassword)}
                     className={classnames.textbox}
                     placeholder={dict.register_form.doctor.PH_confirm_password}>
                   </input>
@@ -225,7 +330,11 @@ export default function RegisterHCenter() {
 
               <div className="sm:col-span-9">
                 <div className="sm:flex">
-                  <input id="af-account-phone" type="text"
+                  <input
+                    id="af-account-phone"
+                    name="af-account-phone"
+                    type="text"
+                    onChange={(e) => handleInputChange(e, setPhone)}
                     className={classnames.textbox}
                     placeholder={dict.register_form.doctor.PH_phone_number}>
                   </input>
@@ -234,7 +343,7 @@ export default function RegisterHCenter() {
               {/* <!-- End Col phone--> */}
 
               <div className="sm:col-span-3">
-                <label htmlFor="af-account-division-checkbox" className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200">
+                <label htmlFor="af-account-division" className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200">
                   {"বিভাগ"}
                 </label>
               </div>
@@ -243,10 +352,13 @@ export default function RegisterHCenter() {
                 <div className="sm:flex">
                   {/* Dropdown menu */}
                   <select
+                    id="af-account-division"
+                    name="af-account-division"
+                    onChange={(event) => handleInputChange(event, setDivision)}
                     className="flex py-2 px-3 pr-9 block w-full border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
                     {divisions.map(function (data) {
                       return (
-                        <option>{data}</option>
+                        <option key={data} value={data}> {data}</option>
                       )
                     })}
                   </select>
@@ -264,10 +376,13 @@ export default function RegisterHCenter() {
                 <div className="sm:flex">
                   {/* Dropdown menu */}
                   <select
+                    id="af-account-district"
+                    name="af-account-district"
+                    onChange={(event) => handleInputChange(event, setDistrict)}
                     className="flex py-2 px-3 pr-9 block w-full border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
                     {districts.map(function (data) {
                       return (
-                        <option>{data}</option>
+                        <option key={data} value={data}> {data}</option>
                       )
                     })}
                   </select>
@@ -285,10 +400,13 @@ export default function RegisterHCenter() {
                 <div className="sm:flex">
                   {/* Dropdown menu */}
                   <select
+                    id="af-account-upozilla"
+                    name="af-account-upozilla"
+                    onChange={(event) => handleInputChange(event, setUpozilla)}
                     className="flex py-2 px-3 pr-9 block w-full border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
                     {upozillas.map(function (data) {
                       return (
-                        <option>{data}</option>
+                        <option key={data} value={data}> {data}</option>
                       )
                     })}
                   </select>
@@ -302,7 +420,10 @@ export default function RegisterHCenter() {
               </div>
 
               <div className="sm:col-span-9">
-                <textarea id="af-account-full-address"
+                <textarea
+                  id="af-account-full-address"
+                  name="af-account-full-address"
+                  onChange={(e) => handleInputChange(e, setFullAddress)}
                   className={classnames.textbox}
                   rows={3} placeholder={"২৫ (প্রাইমারি স্কুলের বিপরীতে), নয়াবাজার, ফুলবাড়ি, কুড়িগ্রাম"}></textarea>
               </div>
@@ -319,51 +440,82 @@ export default function RegisterHCenter() {
                   <div key={slot.id} className="flex flex-col w-full">
                     {/* First three selects in one line */}
                     <div className="flex w-full">
-                      <select
-                        className="flex-grow py-2 px-3 mr-2 border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
-                      >
-                        {days.map(function (data) {
-                          return <option key={data}>{data}</option>;
-                        })}
-                      </select>
+                      <label htmlFor={`af-account-days-${slot.id}`}>
+                        <select
+                          id={`af-account-days-${slot.id}`}
+                          onChange={(e) =>
+                            handleTimeSlotInputChange(e, 'day', slot.id) // Pass 'day' as fieldName
+                          }
+                          className="flex-grow py-2 px-3 mr-2 border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                          {days.map(function (data) {
+                            return <option key={data} value={data}> {data}</option>;
+                          })}
+                        </select>
+                      </label>
                       <div className="py-2 mr-2">শুরু</div>
-                      <select
-                        className="flex-grow py-2 px-3 mr-2 border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
-                      >
-                        {times.map(function (data) {
-                          return <option key={data}>{data}</option>;
-                        })}
-                      </select>
-                      <select
-                        className="flex-grow py-2 px-3 pr-4 mr-2 border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
-                      >
-                        <option>AM/PM</option>
-                        <option>AM</option>
-                        <option>PM</option>
-                      </select>
+                      <label htmlFor={`af-account-begin-time-${slot.id}`}>
+                        <select
+                          id={`af-account-begin-time-${slot.id}`}
+                          onChange={(e) =>
+                            handleTimeSlotInputChange(e, 'startTime', slot.id) // Pass 'day' as fieldName
+                          }
+                          className="flex-grow py-2 px-3 mr-2 border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
+                        >
+                          {times.map(function (data) {
+                            return <option key={data} value={data}> {data}</option>;
+                          })}
+                        </select>
+                      </label>
+                      <label htmlFor={`af-account-begin-am-pm-${slot.id}`}>
+                        <select
+                          id={`af-account-begin-am-pm-${slot.id}`}
+                          onChange={(e) =>
+                            handleTimeSlotInputChange(e, 'startAmPm', slot.id) // Pass 'day' as fieldName
+                          }
+                          className="flex-grow py-2 px-3 pr-4 mr-2 border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
+                        >
+                          <option>AM</option>
+                          <option>PM</option>
+                        </select>
+                      </label>
                     </div>
 
                     {/* Next elements in the line below */}
                     <>
                       <div className="flex w-full mt-2">
                         <div className="py-2 mr-2">শেষ</div>
-                        <select
-                          className="flex-grow py-2 px-3 mr-2 border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
-                        >
-                          {times.map(function (data) {
-                            return <option key={data}>{data}</option>;
-                          })}
-                        </select>
-                        <select
-                          className="flex-grow py-2 px-3 pr-2 mr-2 border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-50 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
-                        >
-                          <option>AM/PM</option>
-                          <option>AM</option>
-                          <option>PM</option>
-                        </select>
-                        <div className="h-full flex-grow mr-2">
+                        <label htmlFor={`af-account-end-time-${slot.id}`}>
+                          <select
+                            id={`af-account-end-time-${slot.id}`}
+                            onChange={(e) =>
+                              handleTimeSlotInputChange(e, 'endTime', slot.id) // Pass 'day' as fieldName
+                            }
+                            className="flex-grow py-2 px-3 mr-2 border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
+                          >
+                            {times.map(function (data) {
+                              return <option key={data} value={data}> {data}</option>;
+                            })}
+                          </select>
+                        </label>
+
+                        <label htmlFor={`af-account-end-am-pm-${slot.id}`}>
+                          <select
+                            id={`af-account-end-am-pm-${slot.id}`}
+                            onChange={(e) =>
+                              handleTimeSlotInputChange(e, 'endAmPm', slot.id) // Pass 'day' as fieldName
+                            }
+                            className="flex-grow py-2 px-3 pr-2 mr-2 border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-50 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
+                          >
+                            <option>AM</option>
+                            <option>PM</option>
+                          </select>
+                        </label>
+                        <div className="h-full flex-shrink mr-2">
                           <input
-                            id="af-account-time-slot-person-limit"
+                            id={`af-account-time-slot-person-limit-${slot.id}`}
+                            onChange={(e) =>
+                              handleTimeSlotInputChange(e, 'personLimit', slot.id) // Pass 'day' as fieldName
+                            }
                             type="text"
                             className={classnames.textbox}
                             placeholder="সর্বোচ্চ"
@@ -382,7 +534,7 @@ export default function RegisterHCenter() {
                         )}
                       </div>
                       {timeSlots.length > 1 && (
-                        <p className='mb-6' />)}
+                        <p className="mb-6" />)}
                     </>
                   </div>
                 ))}
@@ -412,8 +564,8 @@ export default function RegisterHCenter() {
                 {dict.register_form.doctor.cancel}
               </button>
               <button
-                type="button"
-                className="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800" onClick={handleCreateAccountClick}
+                type="submit"
+                className="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800"
               >
                 {dict.register_form.doctor.create_account}
               </button>
