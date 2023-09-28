@@ -503,39 +503,40 @@ export default function RegisterDoctor() {
                   <div key={slot.id} className="flex flex-col w-full">
                     {/* First three selects in one line */}
                     <div className="flex w-full">
-                      <label htmlFor={`af-account-days-${slot.id}`}>
+                      <label htmlFor={`af-account-days-${slot.id}`} className="flex-grow py-2 pr-3 mr-2">
                         <select
+                          className="w-full border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
                           id={`af-account-days-${slot.id}`}
                           onChange={(e) =>
                             handleTimeSlotInputChange(e, 'day', slot.id) // Pass 'day' as fieldName
                           }
-                          className="flex-grow py-2 px-3 mr-2 border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                        >
                           {days.map(function (data) {
                             return <option key={data} value={data}> {data}</option>;
                           })}
                         </select>
                       </label>
-                      <div className="py-2 mr-2">শুরু</div>
-                      <label htmlFor={`af-account-begin-time-${slot.id}`}>
+                      <div className="pt-4 mr-2">শুরু</div>
+                      <label htmlFor={`af-account-begin-time-${slot.id}`} className="flex-grow py-2 pl-3 mr-2">
                         <select
                           id={`af-account-begin-time-${slot.id}`}
                           onChange={(e) =>
                             handleTimeSlotInputChange(e, 'startTime', slot.id) // Pass 'day' as fieldName
                           }
-                          className="flex-grow py-2 px-3 mr-2 border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
+                          className="w-full border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
                         >
                           {times.map(function (data) {
                             return <option key={data} value={data}> {data}</option>;
                           })}
                         </select>
                       </label>
-                      <label htmlFor={`af-account-begin-am-pm-${slot.id}`}>
+                      <label htmlFor={`af-account-begin-am-pm-${slot.id}`} className="flex-grow py-2">
                         <select
                           id={`af-account-begin-am-pm-${slot.id}`}
                           onChange={(e) =>
                             handleTimeSlotInputChange(e, 'startAmPm', slot.id) // Pass 'day' as fieldName
                           }
-                          className="flex-grow py-2 px-3 pr-4 mr-2 border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
+                          className="w-full border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
                         >
                           <option>AM</option>
                           <option>PM</option>
@@ -547,13 +548,13 @@ export default function RegisterDoctor() {
                     <>
                       <div className="flex w-full mt-2">
                         <div className="py-2 mr-2">শেষ</div>
-                        <label htmlFor={`af-account-end-time-${slot.id}`}>
+                        <label htmlFor={`af-account-end-time-${slot.id}`} className="flex-grow pb-2 mr-2">
                           <select
                             id={`af-account-end-time-${slot.id}`}
                             onChange={(e) =>
                               handleTimeSlotInputChange(e, 'endTime', slot.id) // Pass 'day' as fieldName
                             }
-                            className="flex-grow py-2 px-3 mr-2 border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
+                            className="w-full border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
                           >
                             {times.map(function (data) {
                               return <option key={data} value={data}> {data}</option>;
@@ -561,19 +562,20 @@ export default function RegisterDoctor() {
                           </select>
                         </label>
 
-                        <label htmlFor={`af-account-end-am-pm-${slot.id}`}>
+                        <label htmlFor={`af-account-end-am-pm-${slot.id}`} className="flex flex-grow pb-2">
                           <select
                             id={`af-account-end-am-pm-${slot.id}`}
                             onChange={(e) =>
                               handleTimeSlotInputChange(e, 'endAmPm', slot.id) // Pass 'day' as fieldName
                             }
-                            className="flex-grow py-2 px-3 pr-2 mr-2 border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-50 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
+                            className="w-full border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-50 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
                           >
                             <option>AM</option>
                             <option>PM</option>
                           </select>
                         </label>
-                        <div className="h-full flex-shrink mr-2">
+                        <div className="pt-2 mx-2">সর্বোচ্চ</div>
+                        <div className="mr-4">
                           <input
                             id={`af-account-time-slot-person-limit-${slot.id}`}
                             onChange={(e) =>
@@ -581,7 +583,7 @@ export default function RegisterDoctor() {
                             }
                             type="text"
                             className={classnames.textbox}
-                            placeholder="সর্বোচ্চ"
+                            placeholder="রোগী সংখ্যা"
                           />
                         </div>
                         <div className="py-2 mr-2">জন</div>
@@ -596,8 +598,10 @@ export default function RegisterDoctor() {
                           </button>
                         )}
                       </div>
-                      {timeSlots.length > 1 && (
-                        <p className="mb-6" />)}
+                      {
+                        timeSlots.length > 1 && (
+                          <p className="mb-6" />)
+                      }
                     </>
                   </div>
                 ))}
@@ -706,7 +710,7 @@ export default function RegisterDoctor() {
                 {dict.register_form.doctor.create_account}
               </button>
             </div>
-          </form>
+          </form >
         </div >
         {/* <!-- End Card --> */}
       </div >
