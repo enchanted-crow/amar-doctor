@@ -51,7 +51,6 @@ export default function RegisterPatient() {
 
   async function onFormSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    alert("ok")
 
     const ui2ApiAtrrNameMap: {
       [key: string

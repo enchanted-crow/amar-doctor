@@ -6,9 +6,9 @@ import Image from 'next/image';
 import { dict } from '@/global/translation';
 import Link from 'next/link';
 
-const doctor_type = ["MBBS", "BDS", "Psychology"];
-const departments = ["A", "hajaribag"];
-const genders = ["পুরুষ", "মহিলা", "অন্যান্য"];
+const divisions = ["পুরুষ", "মহিলা", "অন্যান্য"];
+const upozillas = ["A", "hajaribag"];
+const districts = ["MBBS", "BDS"];
 const days = ["রবিবার", "সোমবার", "মঙ্গলবার", "বুধবার", "বৃহস্পতিবার", "শুক্রবার", "শনিবার"];
 const times = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 
@@ -30,24 +30,19 @@ interface MapStr2Str {
   [key: string]: string;
 }
 
-export default function RegisterDoctor() {
+export default function RegisterHCenter() {
   // Define state variables for input fields
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phone, setPhone] = useState('');
-  // const [gender, setGender] = useState('');
-  const [doctorType, setDoctorType] = useState('');
-  const [department, setDepartment] = useState('');
-  const [institution, setInstitution] = useState('');
-  const [designation, setDesignation] = useState('');
-  const [degrees, setDegrees] = useState('');
-  const [bmdcRegNo, setBmdcRegNo] = useState('');
-  const [bmdcRegYear, setBmdcRegYear] = useState('');
-  const [chamberLocation, setChamberLocation] = useState('');
-  const [bio, setBio] = useState('');
-  const [profileImage, setProfileImage] = useState('../../../../public/images/signup/user_profile_picture_default.jpg');
+  const [division, setDivision] = useState('');
+  const [district, setDistrict] = useState('');
+  const [upozilla, setUpozilla] = useState('');
+  const [fullAddress, setFullAddress] = useState('');
+  const [photo, setPhoto] = useState('../../../../public/images/signup/building_picture_default.png');
+
   const initialTimeSlots: TimeSlot[] = [
     {
       id: 1,
@@ -59,6 +54,7 @@ export default function RegisterDoctor() {
       personLimit: "0",
     },
   ];
+  // Use the initialTimeSlots array when initializing state
   const [timeSlots, setTimeSlots] = useState(initialTimeSlots);
 
   const addTimeSlot = () => {
@@ -85,6 +81,8 @@ export default function RegisterDoctor() {
     setTimeSlots(updatedSlots);
   };
 
+
+
   // Function to handle input field change and update state
   const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>, stateUpdater: (value: string) => void): void => {
     const value = event.target.value;
@@ -107,31 +105,26 @@ export default function RegisterDoctor() {
     setTimeSlots(updatedTimeSlots);
   };
 
-
   async function onFormSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    alert("ok")
 
-    const ui2ApiAtrrNameMap: { [key: string]: string } = {
+    const ui2ApiAtrrNameMap: {
+      [key: string
+      ]: string
+    } = {
       "af-account-full-name": "name",
       "af-account-email": "email",
       "af-account-password": "password",
       "af-account-confirm-password": "d",
       "af-account-phone": "contact_no",
-      "af-account-gender": "gender", // GENDER YET NOT AVAILABLE IN BACKEND
-      "af-account-type": "doctor_type",
-      "af-account-department": "department",
-      "af-account-institution": "institution",
-      "af-account-designation": "designation",
-      "af-account-degrees": "degrees",
-      "af-account-bmdc-reg-no": "bmdc_registration_no",
-      "af-account-bmdc-reg-year": "bmdc_registration_year",
-      "af-account-chamber-location": "chamber_location",
-      "af-account-bio": "bio",
+      "af-account-division": "division",
+      "af-account-district": "district",
+      "af-account-upozilla": "upozilla",
+      "af-account-full-address": "address",   // not yet in backend
       // "af-account-timeslots": "time_slot", // this has been handled seperately
     };
 
-    function uiTimeslot2Api(ui_timeslot: TimeSlot) {
+    function uiTimeslot2Api(ui_timeslot: TimeSlot): string {
       let dayBn2EnApi: MapStr2Str = {}
 
       dayBn2EnApi = {
@@ -155,18 +148,14 @@ export default function RegisterDoctor() {
         return formattedHours
       }
 
-      let api_timeslot_time = ""
+      let api_timeslot = ""
       // api_timeslot = ui_timeslot.id.toString();
-      api_timeslot_time += dayBn2EnApi[ui_timeslot.day]
-      api_timeslot_time += "_" + time12to24(ui_timeslot.startTime, ui_timeslot.startAmPm) + "_00"
-      api_timeslot_time += "_" + time12to24(ui_timeslot.endTime, ui_timeslot.endAmPm) + "_00"
+      api_timeslot += dayBn2EnApi[ui_timeslot.day]
+      api_timeslot += "_" + time12to24(ui_timeslot.startTime, ui_timeslot.startAmPm) + "_00"
+      api_timeslot += "_" + time12to24(ui_timeslot.endTime, ui_timeslot.endAmPm) + "_00"
+      api_timeslot += "_" + ui_timeslot.personLimit.toString()
 
-      let api_timeslot_max_count = ui_timeslot.personLimit
-
-      return {
-        "time": api_timeslot_time,
-        "max_count": api_timeslot_max_count,
-      }
+      return api_timeslot
     }
 
     const formData = new FormData(event.currentTarget)
@@ -178,20 +167,15 @@ export default function RegisterDoctor() {
     const timeSlotsJSON = JSON.stringify(apiTimeslots);
     formData.append('time_slot', timeSlotsJSON);
 
-    let photoDummy = [1, 2]
-    formData.append('photo', JSON.stringify(photoDummy));
-
     for (const uiAttrName in ui2ApiAtrrNameMap) {
       let apiAttrName = ui2ApiAtrrNameMap[uiAttrName]
       let data = formData.get(uiAttrName)?.toString() || ''
       formData.delete(uiAttrName)
       if (uiAttrName != "af-account-confirm-password")
         formData.append(apiAttrName, data)
-      if (uiAttrName == "af-account-bmdc-reg-no" || uiAttrName == "af-account-bmdc-reg-year")
-        formData.append(apiAttrName, data)
     }
 
-    const response = await fetch('/api/doctor/register', {
+    const response = await fetch('/api/health-center/register', {
       method: 'POST',
       body: formData,
     })
@@ -202,7 +186,6 @@ export default function RegisterDoctor() {
     // console.log(data)
   }
 
-
   return (
     <>
       {/* <!-- Card Section --> */}
@@ -211,7 +194,7 @@ export default function RegisterDoctor() {
         <div className="bg-white rounded-xl shadow p-4 sm:p-7 dark:bg-slate-900">
           <div className="mb-8">
             <h2 className="mb-2 text-xl font-bold text-gray-800 dark:text-gray-200">
-              {dict.register_form.doctor.form_header}
+              হেলথ সেন্টার রেজিস্ট্রেশন
             </h2>
             <div className="text-sm text-gray-600 dark:text-gray-400">
               {dict.register_form.doctor.form_description}
@@ -223,7 +206,7 @@ export default function RegisterDoctor() {
             <div className="grid sm:grid-cols-12 gap-2 sm:gap-6">
               <div className="sm:col-span-3">
                 <label className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200">
-                  {dict.register_form.doctor.profile_photo}
+                  ছবি
                 </label>
               </div>
               {/* <!-- End Profile photo} --> */}
@@ -234,7 +217,7 @@ export default function RegisterDoctor() {
                     className="inline-block h-16 w-16 rounded-full ring-2 ring-white dark:ring-gray-800"
                     height={200}
                     width={200}
-                    src="/images/signup/user_profile_picture_default.jpg" // Used state variable
+                    src="/images/signup/building_picture_default.png" // Used state variable
                     alt="Profile picture"
                   />
                   <div className="flex gap-x-2">
@@ -276,13 +259,10 @@ export default function RegisterDoctor() {
               <div className="sm:col-span-9">
                 <div className="sm:flex">
                   {/* First name */}
-                  <input
-                    id="af-account-full-name"
-                    name="af-account-full-name"
-                    type="text"
+                  <input id="af-account-full-name" type="text"
                     onChange={(e) => handleInputChange(e, setFullName)}
                     className={classnames.textbox}
-                    placeholder={dict.register_form.doctor.PH_name}>
+                    placeholder={"হোপ স্বাস্থ্য কমপ্লেক্স"}>
                   </input>
                 </div>
               </div>
@@ -302,7 +282,7 @@ export default function RegisterDoctor() {
                   type="email"
                   onChange={(e) => handleInputChange(e, setEmail)}
                   className={classnames.textbox}
-                  placeholder={dict.register_form.doctor.PH_email} >
+                  placeholder={"hope.healthcare@gmail.com"} >
                 </input>
               </div>
               {/* <!-- End Col --> */}
@@ -362,32 +342,9 @@ export default function RegisterDoctor() {
               </div>
               {/* <!-- End Col phone--> */}
 
-              {/* <div className="sm:col-span-3">
-                <label htmlFor="af-account-gender" className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200">
-                  {dict.register_form.doctor.gender}
-                </label>
-              </div>
-
-              <div className="sm:col-span-9">
-                <div className="sm:flex">
-                  <select
-                    id="af-account-gender"
-                    name="af-account-gender"
-                    onChange={(event) => handleInputChange(event, setGender)}
-                    className="flex py-2 px-3 pr-9 block w-full border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
-                    {genders.map(function (data) {
-                      return (
-                        <option key={data} value={data}> {data}</option>
-                      )
-                    })}
-                  </select>
-                </div>
-              </div> */}
-              {/* <!-- End Col gender--> */}
-
               <div className="sm:col-span-3">
-                <label htmlFor="af-account-type" className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200">
-                  {dict.register_form.doctor.doctor_type}
+                <label htmlFor="af-account-division" className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200">
+                  {"বিভাগ"}
                 </label>
               </div>
 
@@ -395,11 +352,11 @@ export default function RegisterDoctor() {
                 <div className="sm:flex">
                   {/* Dropdown menu */}
                   <select
-                    id="af-account-type"
-                    name="af-account-type"
-                    onChange={(e) => handleInputChange(e, setDoctorType)}
+                    id="af-account-division"
+                    name="af-account-division"
+                    onChange={(event) => handleInputChange(event, setDivision)}
                     className="flex py-2 px-3 pr-9 block w-full border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
-                    {doctor_type.map(function (data) {
+                    {divisions.map(function (data) {
                       return (
                         <option key={data} value={data}> {data}</option>
                       )
@@ -407,11 +364,11 @@ export default function RegisterDoctor() {
                   </select>
                 </div>
               </div>
-              {/* <!-- End Col doctor type--> */}
+              {/* <!-- End Col division--> */}
 
               <div className="sm:col-span-3">
-                <label htmlFor="af-account-department" className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200">
-                  {dict.register_form.doctor.department}
+                <label htmlFor="af-account-district" className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200">
+                  {"জেলা"}
                 </label>
               </div>
 
@@ -419,11 +376,35 @@ export default function RegisterDoctor() {
                 <div className="sm:flex">
                   {/* Dropdown menu */}
                   <select
-                    id="af-account-department"
-                    name="af-account-department"
-                    onChange={(e) => handleInputChange(e, setDepartment)}
+                    id="af-account-district"
+                    name="af-account-district"
+                    onChange={(event) => handleInputChange(event, setDistrict)}
                     className="flex py-2 px-3 pr-9 block w-full border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
-                    {departments.map(function (data) {
+                    {districts.map(function (data) {
+                      return (
+                        <option key={data} value={data}> {data}</option>
+                      )
+                    })}
+                  </select>
+                </div>
+              </div>
+              {/* <!-- End Col division--> */}
+
+              <div className="sm:col-span-3">
+                <label htmlFor="af-account-upozilla" className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200">
+                  {"উপজেলা"}
+                </label>
+              </div>
+
+              <div className="sm:col-span-9">
+                <div className="sm:flex">
+                  {/* Dropdown menu */}
+                  <select
+                    id="af-account-upozilla"
+                    name="af-account-upozilla"
+                    onChange={(event) => handleInputChange(event, setUpozilla)}
+                    className="flex py-2 px-3 pr-9 block w-full border-gray-200 shadow-sm rounded-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                    {upozillas.map(function (data) {
                       return (
                         <option key={data} value={data}> {data}</option>
                       )
@@ -433,68 +414,24 @@ export default function RegisterDoctor() {
               </div>
 
               <div className="sm:col-span-3">
-                <div className="inline-block">
-                  <label htmlFor="af-account-institution" className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200">
-                    {dict.register_form.doctor.institution}
-                  </label>
-                </div>
-              </div>
-
-              <div className="sm:col-span-9">
-                <div className="sm:flex">
-                  <input
-                    id="af-account-institution"
-                    name="af-account-institution"
-                    type="text"
-                    onChange={(e) => handleInputChange(e, setInstitution)}
-                    className={classnames.textbox}
-                    placeholder={dict.register_form.doctor.PH_institution}>
-                  </input>
-                </div>
-              </div>
-              {/* <!-- End Col institution --> */}
-
-              <div className="sm:col-span-3">
-                <div className="inline-block">
-                  <label htmlFor="af-account-designation" className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200">
-                    {dict.register_form.doctor.designation}
-                  </label>
-                </div>
-              </div>
-
-              <div className="sm:col-span-9">
-                <div className="sm:flex">
-                  <input
-                    id="af-account-designation"
-                    name="af-account-designation"
-                    type="text"
-                    onChange={(e) => handleInputChange(e, setDesignation)}
-                    className={classnames.textbox}
-                    placeholder={dict.register_form.doctor.PH_designation}>
-                  </input>
-                </div>
-              </div>
-              {/* <!-- End Col designation --> */}
-
-              <div className="sm:col-span-3">
-                <label htmlFor="af-account-degrees" className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200">
-                  {dict.register_form.doctor.degrees}
+                <label htmlFor="af-account-full-address" className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200">
+                  {"ঠিকানা"}
                 </label>
               </div>
 
               <div className="sm:col-span-9">
                 <textarea
-                  id="af-account-degrees"
-                  name="af-account-degrees"
-                  onChange={(e) => handleInputChange(e, setDegrees)}
+                  id="af-account-full-address"
+                  name="af-account-full-address"
+                  onChange={(e) => handleInputChange(e, setFullAddress)}
                   className={classnames.textbox}
-                  rows={3} placeholder={dict.register_form.doctor.PH_degrees}></textarea>
+                  rows={3} placeholder={"২৫ (প্রাইমারি স্কুলের বিপরীতে), নয়াবাজার, ফুলবাড়ি, কুড়িগ্রাম"}></textarea>
               </div>
-              {/* <!-- End Col Degrees --> */}
+              {/* <!-- End Col full-address --> */}
 
               <div className="sm:col-span-3">
                 <label htmlFor="af-account-time-slots" className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200">
-                  {dict.register_form.doctor.time_slot}
+                  {"সেন্টার খোলা থাকার সময়"}
                 </label>
               </div>
 
@@ -620,80 +557,6 @@ export default function RegisterDoctor() {
                 </div>
               </div>
               {/* <!-- End Col time slot --> */}
-
-
-              <div className="sm:col-span-3" >
-                <label htmlFor="af-account-bmdc-reg-no" className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200">
-                  {dict.register_form.doctor.bmdc_reg_no}
-                </label>
-              </div>
-
-              <div className="sm:col-span-9">
-                <div className="sm:flex">
-                  <input
-                    id="af-account-bmdc-reg-no"
-                    name="af-account-bmdc-reg-no"
-                    type="text"
-                    onChange={(e) => handleInputChange(e, setBmdcRegNo)}
-                    className={classnames.textbox}
-                    placeholder={dict.register_form.doctor.PH_bmdc_reg_no}>
-                  </input>
-                </div>
-              </div>
-              {/* <!-- End Col bmdc registratiohn number --> */}
-
-              <div className="sm:col-span-3">
-                <label htmlFor="af-account-bmdc-reg-year" className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200">
-                  {dict.register_form.doctor.bmdc_reg_year}
-                </label>
-              </div>
-
-              <div className="sm:col-span-9">
-                <div className="sm:flex">
-                  <input
-                    id="af-account-bmdc-reg-year"
-                    name="af-account-bmdc-reg-year"
-                    type="text"
-                    onChange={(e) => handleInputChange(e, setBmdcRegYear)}
-                    className={classnames.textbox}
-                    placeholder={dict.register_form.doctor.PH_bmdc_reg_year}>
-                  </input>
-                </div>
-              </div>
-              {/* <!-- End Col bmdc registration year --> */}
-
-              <div className="sm:col-span-3">
-                <label htmlFor="af-account-chamber-location" className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200">
-                  {dict.register_form.doctor.chamber_location}
-                </label>
-              </div>
-
-              <div className="sm:col-span-9">
-                <textarea
-                  id="af-account-chamber-location"
-                  name="af-account-chamber-location"
-                  onChange={(e) => handleInputChange(e, setChamberLocation)}
-                  className={classnames.textbox}
-                  rows={3} placeholder={dict.register_form.doctor.PH_chamber_location}></textarea>
-              </div>
-              {/* <!-- End Col Degrees --> */}
-
-
-              <div className="sm:col-span-3">
-                <label htmlFor="af-account-bio" className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200">
-                  {dict.register_form.doctor.bio}
-                </label>
-              </div>
-
-              <div className="sm:col-span-9">
-                <textarea
-                  id="af-account-bio"
-                  name="af-account-bio"
-                  onChange={(e) => handleInputChange(e, setBio)}
-                  className={classnames.textbox}
-                  rows={6} placeholder={dict.register_form.doctor.PH_bio}></textarea>
-              </div>
-              {/* <!-- End Col bio--> */}
             </div>
             {/* <!-- End Grid --> */}
 
@@ -706,11 +569,12 @@ export default function RegisterDoctor() {
               </button>
               <button
                 type="submit"
-                className="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800">
+                className="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800"
+              >
                 {dict.register_form.doctor.create_account}
               </button>
             </div>
-          </form >
+          </form>
         </div >
         {/* <!-- End Card --> */}
       </div >

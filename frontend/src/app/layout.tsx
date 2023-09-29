@@ -6,19 +6,20 @@ import { dict } from '@/global/translation'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-    title: dict.metadata.title,
-    description: dict.metadata.description,
+  title: dict.metadata.title,
+  description: dict.metadata.description,
 }
 
 export default function RootLayout({
-    children,
+  children,
 }: {
-    children: React.ReactNode
+  children: React.ReactNode
 }) {
 
-    return (
-        <html lang="en">
-            <body className={inter.className}>{children}</body>
-        </html>
-    )
+  return (
+    <html lang="en">
+      <body className={inter.className}>{children}</body>
+      <script src="./node_modules/preline/dist/preline.js"></script>
+    </html>
+  )
 }

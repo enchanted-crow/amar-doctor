@@ -3,6 +3,7 @@
 import React, { FormEvent } from 'react'
 import { dict } from '@/global/translation'
 import Link from 'next/link'
+import { LoginCredentials, UserTypes } from '@/global/credentials';
 
 const Login = () => {
 
@@ -10,20 +11,18 @@ const Login = () => {
     event.preventDefault()
 
     const formData = new FormData(event.currentTarget)
+    let acc_type = formData.get("account-type")
+    formData.delete('account-type')
 
     let api_url = ''
-    let acc_type = formData.get("account-type")
     if (acc_type == "রোগী") {
       api_url = '/api/patient/login'
-      formData.delete('account-type')
     }
     if (acc_type == "ডাক্তার") {
       api_url = '/api/doctor/login'
-      formData.delete('account-type')
     }
     if (acc_type == "হেলথ সেন্টার") {
       api_url = '/api/health-center/login'
-      formData.delete('account-type')
     }
 
     const response = await fetch(api_url, {
@@ -32,6 +31,18 @@ const Login = () => {
     })
 
     // Handle response if necessary
+    // Save auth token, handle islogged in
+
+    if (acc_type == "রোগী") {
+      LoginCredentials.userType = UserTypes.patient
+    }
+    if (acc_type == "ডাক্তার") {
+      LoginCredentials.userType = UserTypes.doctor
+    }
+    if (acc_type == "হেলথ সেন্টার") {
+      LoginCredentials.userType = UserTypes.health_center
+    }
+
     const data = await response.json()
     console.log(JSON.stringify(Object.fromEntries(formData)))
     console.log(data)
