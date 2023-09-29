@@ -83,7 +83,7 @@ export default function RegisterPatient() {
         formData.append(apiAttrName, data)
     }
 
-    const response = await fetch('/api/patient/registration', {
+    const response = await fetch('/api/patient/register', {
       method: 'POST',
       body: formData,
     })

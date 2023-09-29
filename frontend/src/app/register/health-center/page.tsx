@@ -176,7 +176,7 @@ export default function RegisterHCenter() {
         formData.append(apiAttrName, data)
     }
 
-    const response = await fetch('/api/health-center/registration', {
+    const response = await fetch('/api/health-center/register', {
       method: 'POST',
       body: formData,
     })
