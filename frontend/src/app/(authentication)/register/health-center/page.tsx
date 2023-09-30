@@ -259,7 +259,10 @@ export default function RegisterHCenter() {
               <div className="sm:col-span-9">
                 <div className="sm:flex">
                   {/* First name */}
-                  <input id="af-account-full-name" type="text"
+                  <input
+                    id="af-account-full-name"
+                    name="af-account-full-name"
+                    type="text"
                     onChange={(e) => handleInputChange(e, setFullName)}
                     className={classnames.textbox}
                     placeholder={"হোপ স্বাস্থ্য কমপ্লেক্স"}>
