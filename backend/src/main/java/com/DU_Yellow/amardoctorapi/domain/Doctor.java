@@ -25,7 +25,7 @@ public class Doctor {
 
     private String name;
     private String contact_no;
-    private String doctor_type;
+    private String doctorType;
 
     private String department;
 
@@ -37,27 +37,27 @@ public class Doctor {
 
     private String chamber_location;
 
-    private Integer bmdc_registration_no;
+    private String bmdc_registration_no;
 
-    private Integer bmdc_registration_year;
+    private String bmdc_registration_year;
 
     private String bio;
 
     private Byte[] photo;
     @ElementCollection
-    private List<TimeSlot> time_slot;
+    private List<TimeSlot> timeSlot;
 
 
 
     public Doctor() {
     }
 
-    public Doctor(String email, String password, String name, String contact_no, String doctor_type, String department, String designation, String institution, String degrees, String chamber_location, Integer bmdc_registration_no, Integer bmdc_registration_year, String bio, Byte[] photo, List<TimeSlot> time_slot) {
+    public Doctor(String email, String password, String name, String contact_no, String doctor_type, String department, String designation, String institution, String degrees, String chamber_location, String bmdc_registration_no, String bmdc_registration_year, String bio, Byte[] photo, List<TimeSlot> time_slot) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.contact_no = contact_no;
-        this.doctor_type = doctor_type;
+        this.doctorType = doctor_type;
         this.department = department;
         this.designation = designation;
         this.institution = institution;
@@ -67,7 +67,7 @@ public class Doctor {
         this.bmdc_registration_year = bmdc_registration_year;
         this.bio = bio;
         this.photo = photo;
-        this.time_slot = time_slot;
+        this.timeSlot = time_slot;
     }
 
     public Integer getId() {
@@ -110,12 +110,12 @@ public class Doctor {
         this.contact_no = contact_no;
     }
 
-    public String getDoctor_type() {
-        return doctor_type;
+    public String getDoctorType() {
+        return doctorType;
     }
 
-    public void setDoctor_type(String doctor_type) {
-        this.doctor_type = doctor_type;
+    public void setDoctorType(String doctor_type) {
+        this.doctorType = doctor_type;
     }
 
     public String getDepartment() {
@@ -158,19 +158,19 @@ public class Doctor {
         this.chamber_location = chamber_location;
     }
 
-    public Integer getBmdc_registration_no() {
+    public String getBmdc_registration_no() {
         return bmdc_registration_no;
     }
 
-    public void setBmdc_registration_no(Integer bmdc_registration_no) {
+    public void setBmdc_registration_no(String bmdc_registration_no) {
         this.bmdc_registration_no = bmdc_registration_no;
     }
 
-    public Integer getBmdc_registration_year() {
+    public String getBmdc_registration_year() {
         return bmdc_registration_year;
     }
 
-    public void setBmdc_registration_year(Integer bmdc_registration_year) {
+    public void setBmdc_registration_year(String bmdc_registration_year) {
         this.bmdc_registration_year = bmdc_registration_year;
     }
 
@@ -190,12 +190,12 @@ public class Doctor {
         this.photo = photo;
     }
 
-    public List<TimeSlot> getTime_slot() {
-        return time_slot;
+    public List<TimeSlot> getTimeSlot() {
+        return timeSlot;
     }
 
-    public void setTime_slot(List<TimeSlot> time_slot) {
-        this.time_slot = time_slot;
+    public void setTimeSlot(List<TimeSlot> time_slot) {
+        this.timeSlot = time_slot;
     }
 
     @Override

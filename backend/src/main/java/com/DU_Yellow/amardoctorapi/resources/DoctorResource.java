@@ -19,12 +19,6 @@ import java.util.*;
 @RestController
 @RequestMapping("api/doctor")
 public class DoctorResource {
-    private final DoctorRepository doctorRepository;
-    public DoctorResource(DoctorRepository doctorRepository){
-        this.doctorRepository = doctorRepository;
-    }
-
-
     @Autowired
     DoctorService doctorService;
 
@@ -49,8 +43,10 @@ public class DoctorResource {
         String institution = (String) doctorMap.get("institution");
         String degrees = (String) doctorMap.get("degrees");
         String chamber_location = (String) doctorMap.get("chamber_location");
-        Integer bmdc_registration_no = (Integer) doctorMap.get("bmdc_registration_no");
-        Integer bmdc_registration_year = (Integer) doctorMap.get("bmdc_registration_year");
+
+        String bmdc_registration_no = (String) doctorMap.get("bmdc_registration_no");
+        String bmdc_registration_year = (String) doctorMap.get("bmdc_registration_year");
+
         String bio = (String) doctorMap.get("bio");
 
         Byte[] photo = new Byte[]{};
@@ -67,7 +63,7 @@ public class DoctorResource {
 
         for (Map<String, Object> timeSlotMap : timeSlotList) {
             String time = (String) timeSlotMap.get("time");
-            Integer maxCount = (Integer) timeSlotMap.get("max_count");
+            String maxCount = (String) timeSlotMap.get("max_count");
 
             TimeSlot timeSlot = new TimeSlot();
             timeSlot.setTime(time);
@@ -77,7 +73,6 @@ public class DoctorResource {
         }
 
         Doctor doctor = doctorService.registerUser(email, password, name, contact_no, doctor_type, department, designation, institution, degrees, chamber_location, bmdc_registration_no, bmdc_registration_year, bio, photo, timeSlots);
-        System.out.println(doctor);
         return new ResponseEntity<>(generateJWTToken(doctor), HttpStatus.OK);
 
     }
@@ -85,36 +80,62 @@ public class DoctorResource {
     @GetMapping("/profile") //read
     public ResponseEntity<Doctor> viewProfileByToken(HttpServletRequest request) {
         Integer id = (Integer) request.getAttribute("Id");
-        Doctor doctor = doctorService.viewProfileById(id);
+        Doctor doctor = doctorService.getProfileById(id);
         return new ResponseEntity<>(doctor, HttpStatus.OK);
     }
-
-//    @PutMapping("/update") //update
-//    public ResponseEntity<String> updateProfile(HttpServletRequest request, @RequestBody Map<String, Object> doctorMap){
-//        int id = (Integer) request.getAttribute("Id");
-//        String email = (String) doctorMap.get("email");
-//        String password = (String) doctorMap.get("password");
-//        String name = (String) doctorMap.get("name");
-//        String contact_no = (String) doctorMap.get("contact_no");
-//        String department = (String) doctorMap.get("department");
-//        String qualification = (String) doctorMap.get("qualification");
-//        String specialization = (String) doctorMap.get("specialization");
-//        List<String> time_slot = (List<String>) doctorMap.get("time_slot");
-//
-//        doctorService.updateProfile(id, email, password, name, contact_no, department, qualification, specialization, time_slot);
-//        return new ResponseEntity<>("Update Successful", HttpStatus.OK);
-//
-//    }
 
     @DeleteMapping("/delete")  //delete
     public ResponseEntity<String> delete(HttpServletRequest request){
         int id = (Integer) request.getAttribute("Id");
         doctorService.delete(id);
-        return new ResponseEntity<>("Profile Deleted", HttpStatus.OK);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/viewProfile")
+    public ResponseEntity<Doctor> viewProfileById(@RequestParam Integer id) {
+        Doctor doctor = doctorService.getProfileById(id);
+        return new ResponseEntity<>(doctor, HttpStatus.OK);
+    }
+
+    @GetMapping("/types")
+    public List<String> getAllTypes() {
+        return doctorService.getAllTypes();
+    }
+
+    @GetMapping("/departmentsByType")
+    public List<String> getDepartmentsByType(@RequestParam String type) {
+        return doctorService.getDepartmentsByType(type);
     }
 
 
+    @GetMapping("/doctorsByDepartmentAndType")
+    public List<Doctor> getDoctorsByDepartment(@RequestParam String type, @RequestParam String departmentName) {
+        return doctorService.findDoctorsByDepartment(type, departmentName);
+    }
 
+    @GetMapping("/timeSlot") //read
+    public ResponseEntity<List<TimeSlot>> getTimeSlotByJWT(HttpServletRequest request) {
+        Integer id = (Integer) request.getAttribute("Id");
+        String role = (String) request.getAttribute("role");
+        List<TimeSlot> timeSlots = doctorService.getTimeSlotById(role, id);
+        return new ResponseEntity<>(timeSlots, HttpStatus.OK);
+    }
+
+    @GetMapping("/timeSlotById") //read
+    public ResponseEntity<List<TimeSlot>> getTimeSlotByJWT(HttpServletRequest request, @RequestParam Integer id) {
+        //Integer user_id = (Integer) request.getAttribute("Id");
+        String role = (String) request.getAttribute("role");
+        List<TimeSlot> timeSlots = doctorService.getTimeSlotById(role, id);
+        return new ResponseEntity<>(timeSlots, HttpStatus.OK);
+    }
+
+    @GetMapping("/departmentSuggestion") //read
+    public ResponseEntity<String> getDepartmentSuggestion(HttpServletRequest request, @RequestBody Map<String, String> problem) {
+        String role = (String) request.getAttribute("role");
+        String problem_desc = (String) problem.get("problem");
+        String suggestion = doctorService.getDepartmentSuggestion(role, problem_desc);
+        return new ResponseEntity<>(suggestion, HttpStatus.OK);
+    }
 
 
 
@@ -126,6 +147,7 @@ public class DoctorResource {
                 .setExpiration(new Date(timestamp + Constant.TOKEN_VALIDITY))
                 .claim("Id", doctor.getId())
                 .claim("email", doctor.getEmail())
+                .claim("role", "doctor")
                 .compact();
         Map<String, String> map = new HashMap<>();
         map.put("token", token);

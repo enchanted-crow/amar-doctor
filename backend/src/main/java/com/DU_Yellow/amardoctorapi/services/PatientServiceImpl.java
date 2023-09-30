@@ -6,10 +6,10 @@ import com.DU_Yellow.amardoctorapi.exceptions.NotFoundException;
 import com.DU_Yellow.amardoctorapi.repositories.PatientRepository;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.server.DelegatingServerHttpResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -47,13 +47,22 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Patient viewProfileById(Integer id) throws NotFoundException {
-        Optional<Patient> patient = patientRepository.findById(id);
-        if (patient.isPresent()) {
-            return patient.get();
-        } else {
-            throw new NotFoundException("Doctor not found");
+    public Patient getProfileById(String role, Integer id) throws NotFoundException, UserAuthException {
+        if(role.equals("doctor") || role.equals("health_center") || role.equals("patient")){
+            Optional<Patient> patient = patientRepository.findById(id);
+            if (patient.isPresent()) {
+                return patient.get();
+            } else {
+                throw new NotFoundException("Patient not found");
+            }
         }
+
+        else {
+            throw new UserAuthException("Permission denied");
+
+        }
+
+
     }
 
 

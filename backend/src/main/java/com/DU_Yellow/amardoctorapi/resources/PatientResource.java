@@ -2,7 +2,6 @@ package com.DU_Yellow.amardoctorapi.resources;
 
 import com.DU_Yellow.amardoctorapi.Constant;
 import com.DU_Yellow.amardoctorapi.domain.Patient;
-import com.DU_Yellow.amardoctorapi.repositories.PatientRepository;
 import com.DU_Yellow.amardoctorapi.services.PatientService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -19,11 +18,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("api/patient")
 public class PatientResource {
-    private final PatientRepository patientRepository;
-    public PatientResource(PatientRepository patientRepository){
-        this.patientRepository = patientRepository;
-    }
-
 
     @Autowired
     PatientService patientService;
@@ -68,7 +62,8 @@ public class PatientResource {
     @GetMapping("/profile") //read
     public ResponseEntity<Patient> viewProfileByToken(HttpServletRequest request) {
         Integer id = (Integer) request.getAttribute("Id");
-        Patient patient = patientService.viewProfileById(id);
+        String role = (String) request.getAttribute("role");
+        Patient patient = patientService.getProfileById(role, id);
         return new ResponseEntity<>(patient, HttpStatus.OK);
     }
 
@@ -77,12 +72,16 @@ public class PatientResource {
     public ResponseEntity<String> delete(HttpServletRequest request){
         int id = (Integer) request.getAttribute("Id");
         patientService.delete(id);
-        return new ResponseEntity<>("Profile Deleted", HttpStatus.OK);
+        return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/viewProfile") //by doctors and hc and patient
+    public ResponseEntity<Patient> viewProfileById(HttpServletRequest request, @RequestParam Integer id) {
+        String role = (String) request.getAttribute("role");
 
-
-
+        Patient patient = patientService.getProfileById(role, id);
+        return new ResponseEntity<>(patient, HttpStatus.OK);
+    }
 
 
 
@@ -93,6 +92,7 @@ public class PatientResource {
                 .setExpiration(new Date(timestamp + Constant.TOKEN_VALIDITY))
                 .claim("Id", patient.getId())
                 .claim("email", patient.getEmail())
+                .claim("role", "patient")
                 .compact();
         Map<String, String> map = new HashMap<>();
         map.put("token", token);

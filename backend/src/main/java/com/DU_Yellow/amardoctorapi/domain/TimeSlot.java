@@ -5,7 +5,7 @@ import jakarta.persistence.Embeddable;
 @Embeddable
 public class TimeSlot {
         private String time;
-        private Integer max_count;
+        private String max_count;
 
         public String getTime() {
                 return time;
@@ -15,11 +15,11 @@ public class TimeSlot {
                 this.time = time;
         }
 
-        public Integer getMax_count() {
+        public String getMax_count() {
                 return max_count;
         }
 
-        public void setMax_count(Integer max_count) {
+        public void setMax_count(String max_count) {
                 this.max_count = max_count;
         }
 }
