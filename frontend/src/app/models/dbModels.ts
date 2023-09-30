@@ -1,7 +1,7 @@
 // All data types are strings here as we will always send string data from frontend to backend
 
 export interface Doctor {
-  id: string | null;
+  id: number | null;
   email: string | null;
   password: string | null;
   name: string | null;
@@ -15,20 +15,20 @@ export interface Doctor {
   bmdc_registration_no: string | null;
   bmdc_registration_year: string | null;
   bio: string | null;
-  photo: string[] | null;
+  photo: number[] | null;
   time_slot: TimeSlot[] | null;
 }
 
 export interface TimeSlot {
   time: string | null;
-  max_count: string | null
+  max_count: number | null
 }
 
 export interface Appointment {
-  problem_id: string | null;
-  doctor_id: string | null;
-  helath_center_id: string | null;
-  prescription_id: string | null;
+  problem_id: number | null;
+  doctor_id: number | null;
+  helath_center_id: number | null;
+  prescription_id: number | null;
   date_time: string | null;
   from_home: boolean | null;
   payment_status: boolean | null;
@@ -36,7 +36,7 @@ export interface Appointment {
 }
 
 export interface HealthCenter {
-  id: string | null;
+  id: number | null;
   email: string | null;
   password: string | null;
   name: string | null;
@@ -49,13 +49,14 @@ export interface HealthCenter {
 }
 
 export interface Prescription {
-  id: string | null;
-  appointment_id: string | null;
+  id: number | null;
+  appointment_id: number | null;
   document: number[] | null;
 }
 
+
 export interface Patient {
-  id: string | null;
+  id: number | null;
   email: string | null;
   password: string | null;
   name: string | null;
@@ -68,6 +69,7 @@ export interface Patient {
   upozilla: string | null;
   photo: number[] | null;
 }
+
 
 export interface Problem {
   id: number | null;
