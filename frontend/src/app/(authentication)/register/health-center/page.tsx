@@ -175,15 +175,18 @@ export default function RegisterHCenter() {
         formData.append(apiAttrName, data)
     }
 
-    const response = await fetch('/api/health-center/register', {
+    const response = await fetch('http://localhost:8080/api/healthCenter/register', {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', // Set the correct Content-Type
+      },
       body: formData,
     })
 
     // Handle response if necessary
     const data = await response.json()
     console.log(JSON.stringify(Object.fromEntries(formData)))
-    // console.log(data)
+    console.log(data)
   }
 
   return (
