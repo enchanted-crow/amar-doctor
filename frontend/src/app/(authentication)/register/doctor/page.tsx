@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { dict } from '@/global/translation';
 import Link from 'next/link';
 
-const doctor_type = ["MBBS", "BDS", "Psychology"];
+const doctor_type = ["MBBS", "BDS"];
 const departments = ["A", "hajaribag"];
 const genders = ["পুরুষ", "মহিলা", "অন্যান্য"];
 const days = ["রবিবার", "সোমবার", "মঙ্গলবার", "বুধবার", "বৃহস্পতিবার", "শুক্রবার", "শনিবার"];

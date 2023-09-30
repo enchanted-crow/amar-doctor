@@ -1,7 +1,7 @@
 'use client';
 
 import Link from "next/link"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const selectedPageClassName = "flex items-center gap-x-3.5 py-2 px-2.5 bg-gray-100 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white"
 
@@ -14,16 +14,20 @@ export default function DashboardLayoutPatient({
 }) {
   const [selectedPageName, setSelectedPageName] = useState("current-meeting");
 
+  useEffect(() => {
+    console.log(selectedPageName)
+  }, [selectedPageName]);
+
   function handleLogOut() {
     setSelectedPageName("log-out")
     console.log("logout")
   }
 
   return (
-    <div className="w-screen h-screen flex flex-col bg-gray-50 dark:bg-slate-900">
+    <div className="w-screen h-full flex flex-col bg-gray-50 dark:bg-slate-900">
       {/* <!-- ========== HEADER ========== --> */}
       <header className="flex flex-wrap sm:justify-start sm:flex-nowrap w-full bg-white border-b border-gray-200 text-sm py-3 sm:py-0 dark:bg-gray-800 dark:border-gray-700">
-        <nav className="relative w-11/12 mx-auto px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8" aria-label="Global">
+        <nav className="relative w-11/12 mx-auto px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8 lg:ml-64" aria-label="Global">
           <div className="flex items-center justify-between">
             {/* <Link className="flex-none text-xl font-semibold dark:text-white" href="#" aria-label="Brand">
               আমার ডাক্তার
@@ -41,11 +45,22 @@ export default function DashboardLayoutPatient({
           </div>
           <div id="navbar-collapse-with-animation" className="hs-collapse hidden overflow-hidden transition-all duration-300 basis-full grow sm:block">
             <div className="flex flex-col gap-y-4 gap-x-0 mt-5 sm:flex-row sm:items-center sm:justify-end sm:gap-y-0 sm:gap-x-7 sm:mt-0 sm:pl-7">
-              {/* <Link className="font-medium text-gray-500 hover:text-gray-400 sm:py-6 dark:text-gray-400 dark:hover:text-gray-500" href="#">
-                <p className="pt-1">Blog</p>
-              </Link> */}
+              <p className="font-medium text-gray-800 sm:py-6 dark:text-gray-400">
+                {(selectedPageName == 'current-meeting') &&
+                  <div className="pt-1">
+                    চলমান মিটিং
+                  </div>}
+                {(selectedPageName == 'all-appointments') &&
+                  <div className="pt-1">
+                    সকল অ্যাপয়েন্টমেন্ট
+                  </div>}
+                {(selectedPageName == 'new-appointment') &&
+                  <div className="pt-1">
+                    নতুন অ্যাপয়েন্টমেন্ট
+                  </div>}
+              </p>
 
-              <Link className="flex items-center gap-x-2 font-medium text-gray-500 hover:text-blue-600 sm:border-l sm:border-gray-300 sm:my-6 sm:pl-6 dark:border-gray-700 dark:text-gray-400 dark:hover:text-blue-500" href="#">
+              <Link className="flex items-center gap-x-2 font-medium text-gray-500 hover:text-gray-600 sm:border-l sm:border-gray-300 sm:my-6 sm:pl-6 dark:border-gray-700 dark:text-gray-400 dark:hover:text-blue-500" href="#">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
                 </svg>
@@ -123,15 +138,6 @@ export default function DashboardLayoutPatient({
                   </Link>
                 </li>
               </div>
-
-
-              {/* <li><Link className={unselectedPageClassName} href="javascript:;">
-                <svg className="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                  <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-5 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z" />
-                  <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
-                </svg>
-                Calendar
-                </Link></li> */}
 
               <div>
                 <li>
