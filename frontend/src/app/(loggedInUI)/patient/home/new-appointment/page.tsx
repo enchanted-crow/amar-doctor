@@ -7,6 +7,7 @@ import { dict } from '@/global/translation';
 import Link from 'next/link';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { Doctor, Appointment, HealthCenter, Patient, Prescription, Problem, TimeSlot } from '@/app/models/dbModels';
 
 
 const divisions = ["পুরুষ", "মহিলা", "অন্যান্য"];
@@ -18,6 +19,7 @@ const departments = ["A", "hajaribag"];
 const classnames = {
   "textbox": "py-2 px-3 pr-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 placeholder-gray-500 placeholder-opacity-90"
 }
+
 
 export default function NewAppointmentPatient() {
   // Define state variables for input fields
