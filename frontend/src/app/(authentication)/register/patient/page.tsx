@@ -7,12 +7,14 @@ import { dict } from '@/global/translation';
 import Link from 'next/link';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { LoginCredentials } from '@/global/credentials';
 import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 
-const divisions = ["পুরুষ", "মহিলা", "অন্যান্য"];
-const upozillas = ["A", "hajaribag"];
-const districts = ["MBBS", "BDS"];
+const divisions = ["ময়মনসিংহ", "বরিশাল", "চট্টগ্রাম", "ঢাকা", "খুলনা", "রাজশাহী", "রংপুর", "সিলেট"];
+const upozillas = ["ময়মনসিংহ সদর", "মুক্তাগাছা", "ভালুকা ", "হালুয়াঘাট" , "গৌরীপুর" , "ধোবাউড়া" , "ফুলবাড়িয়া ", "গফরগাঁও" , "ত্রিশাল" , "ফুলপুর" , "নান্দাইল" , "ঈশ্বরগঞ্জ"];
+const districts = ["ময়মনসিংহ", "নেত্রকোণা", "শেরপুর", "জামালপুর"];
 const genders = ["পুরুষ", "মহিলা", "অন্যান্য"];
 const blood_groups = ["O+", "A+", "B+", "AB+", "O-", "A-", "B-", "AB-"];
 
@@ -36,6 +38,7 @@ export default function RegisterPatient() {
   const [profileImage, setProfileImage] = useState('../../../../public/images/signup/user_profile_picture_default.jpg');
   const [toRedirectLogin, setToRedirectLogin] = useState(false)
 
+
   // Function to handle input field change and update state
   const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>, stateUpdater: (value: string) => void): void => {
     const value = event.target.value;
@@ -52,6 +55,7 @@ export default function RegisterPatient() {
   };
 
   async function onFormSubmit(event: FormEvent<HTMLFormElement>) {
+    const router = useRouter()
     event.preventDefault()
 
     const ui2ApiAtrrNameMap: {
@@ -84,17 +88,31 @@ export default function RegisterPatient() {
         formData.append(apiAttrName, data)
     }
 
-    // const response = await fetch('/api/patient/register', {
-    //   method: 'POST',
-    //   body: formData,
-    // })
+    const response = await fetch('http://localhost:8080/api/patient/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', // Set the correct Content-Type
+      },
+      body: JSON.stringify(Object.fromEntries(formData)),
+    
+    })
 
     // Handle response if necessary
-    // const data = await response.json()
+    const data = await response.json()
     console.log(JSON.stringify(Object.fromEntries(formData)))
+    console.log(data)
 
+    const token = data["token"]
+    console.log(token)
+
+    
+    if(token !== null){
+      
     setToRedirectLogin(true)
-    console.log(toRedirectLogin)
+
+    }
+
+
   }
 
   return (

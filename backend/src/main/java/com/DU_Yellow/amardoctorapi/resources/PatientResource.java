@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@CrossOrigin
 @RestController
 @RequestMapping("api/patient")
 public class PatientResource {
@@ -31,6 +32,7 @@ public class PatientResource {
         return new ResponseEntity<>(generateJWTToken(patient), HttpStatus.OK);
 
     }
+
 
     @PostMapping("/register")  //create
     public ResponseEntity<Map<String, String>> register(@RequestBody Map<String, Object> patientMap) {
