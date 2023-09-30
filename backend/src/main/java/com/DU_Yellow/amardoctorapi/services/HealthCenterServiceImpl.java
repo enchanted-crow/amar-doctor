@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -22,6 +21,8 @@ import java.util.regex.Pattern;
 public class HealthCenterServiceImpl implements HealthCenterService{
     @Autowired
     HealthCenterRepository hcRepository;
+    @Autowired
+    PatientRepository patientRepository;
 
     @Override
     public HealthCenter validateUser(String email, String password) throws UserAuthException {
@@ -51,7 +52,7 @@ public class HealthCenterServiceImpl implements HealthCenterService{
     }
 
     @Override
-    public HealthCenter viewProfileById(Integer id) throws NotFoundException {
+    public HealthCenter getProfileById(Integer id) throws NotFoundException {
         Optional<HealthCenter> hc = hcRepository.findById(id);
         if (hc.isPresent()) {
             return hc.get();
@@ -65,5 +66,38 @@ public class HealthCenterServiceImpl implements HealthCenterService{
     @Override
     public void delete(Integer id){
         hcRepository.deleteById(id);
+    }
+
+    @Override
+    public List<HealthCenter> getHealthCenterByDivision(String division) {
+        return hcRepository.findHealthCenterByDivisionIgnoreCase(division);
+    }
+
+    @Override
+    public List<HealthCenter> getHealthCenterByDistrict(String district) {
+        return hcRepository.findHealthCenterByDistrictIgnoreCase(district);
+    }
+
+    @Override
+    public List<HealthCenter> getHealthCenterByUpozilla(String upozilla) {
+        return hcRepository.findHealthCenterByUpozillaIgnoreCase(upozilla);
+    }
+
+    @Override
+    public List<HealthCenter> getHealthCenterSuggestion(Patient patient) {
+        if(getHealthCenterByUpozilla(patient.getUpozilla()).isEmpty()){
+            if(getHealthCenterByDistrict(patient.getDistrict()).isEmpty()){
+                if(getHealthCenterByDivision(patient.getDivision()).isEmpty()){
+                    return hcRepository.findAll();
+                }
+                return getHealthCenterByDivision(patient.getDivision());
+
+            }
+            else
+                return getHealthCenterByDistrict(patient.getDistrict());
+
+        }
+        else
+            return getHealthCenterByUpozilla(patient.getUpozilla());
     }
 }

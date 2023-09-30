@@ -1,10 +1,12 @@
 package com.DU_Yellow.amardoctorapi.resources;
 
 import com.DU_Yellow.amardoctorapi.Constant;
+import com.DU_Yellow.amardoctorapi.domain.Doctor;
 import com.DU_Yellow.amardoctorapi.domain.HealthCenter;
+import com.DU_Yellow.amardoctorapi.domain.Patient;
 import com.DU_Yellow.amardoctorapi.domain.TimeSlot;
-import com.DU_Yellow.amardoctorapi.repositories.HealthCenterRepository;
 import com.DU_Yellow.amardoctorapi.services.HealthCenterService;
+import com.DU_Yellow.amardoctorapi.services.PatientService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,14 +20,11 @@ import java.util.*;
 @RestController
 @RequestMapping("api/healthCenter")
 public class HealthCenterResource {
-    private final HealthCenterRepository hcRepository;
-    public HealthCenterResource(HealthCenterRepository healthCenterRepository){
-        this.hcRepository = healthCenterRepository;
-    }
-
 
     @Autowired
     HealthCenterService hcService;
+    @Autowired
+    PatientService patientService;
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, Object> hcMap) {
@@ -60,7 +59,7 @@ public class HealthCenterResource {
 
         for (Map<String, Object> timeSlotMap : timeSlotList) {
             String time = (String) timeSlotMap.get("time");
-            Integer maxCount = (Integer) timeSlotMap.get("max_count");
+            String maxCount = (String) timeSlotMap.get("max_count");
 
             TimeSlot timeSlot = new TimeSlot();
             timeSlot.setTime(time);
@@ -77,18 +76,46 @@ public class HealthCenterResource {
     @GetMapping("/profile") //read
     public ResponseEntity<HealthCenter> viewProfileByToken(HttpServletRequest request) {
         Integer id = (Integer) request.getAttribute("Id");
-        HealthCenter hc = hcService.viewProfileById(id);
+        HealthCenter hc = hcService.getProfileById(id);
         return new ResponseEntity<>(hc, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")  //delete
-    public ResponseEntity<String> deleteDoctor(HttpServletRequest request){
+    public ResponseEntity<String> deleteHealthCenter(HttpServletRequest request){
         int id = (Integer) request.getAttribute("Id");
         hcService.delete(id);
-        return new ResponseEntity<>("Profile Deleted", HttpStatus.OK);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/viewProfile")
+    public ResponseEntity<HealthCenter> viewProfileById(@RequestParam Integer id) {
+        HealthCenter hc = hcService.getProfileById(id);
+        return new ResponseEntity<>(hc, HttpStatus.OK);
+    }
+
+    @GetMapping("/healthCentersByDivision")
+    public List<HealthCenter> getHealthCentersByDivision(@RequestParam String division) {
+        return hcService.getHealthCenterByDivision(division);
+    }
+
+    @GetMapping("/healthCentersByDistrict")
+    public List<HealthCenter> getHealthCentersByDistrict(@RequestParam String district) {
+        return hcService.getHealthCenterByDistrict(district);
     }
 
 
+    @GetMapping("/healthCentersByUpozilla")
+    public List<HealthCenter> getHealthCentersByUpozilla(@RequestParam String upozilla) {
+        return hcService.getHealthCenterByUpozilla(upozilla);
+    }
+
+    @GetMapping("/healthCenterSuggestion")
+    public List<HealthCenter> getHealthCentersSuggestion(HttpServletRequest request) {
+        Integer id = (Integer) request.getAttribute("Id");
+        String role = (String) request.getAttribute("role");
+        Patient patient = patientService.getProfileById(role, id);
+        return hcService.getHealthCenterSuggestion(patient);
+    }
 
 
 
@@ -101,6 +128,7 @@ public class HealthCenterResource {
                 .setExpiration(new Date(timestamp + Constant.TOKEN_VALIDITY))
                 .claim("Id", hc.getId())
                 .claim("email", hc.getEmail())
+                .claim("role", "health_center")
                 .compact();
         Map<String, String> map = new HashMap<>();
         map.put("token", token);
