@@ -7,6 +7,7 @@ import { dict } from '@/global/translation';
 import Link from 'next/link';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { redirect } from 'next/navigation';
 
 
 const divisions = ["পুরুষ", "মহিলা", "অন্যান্য"];
@@ -33,6 +34,7 @@ export default function RegisterPatient() {
   const [upozilla, setUpozilla] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState(new Date("2000-01-01"));
   const [profileImage, setProfileImage] = useState('../../../../public/images/signup/user_profile_picture_default.jpg');
+  const [toRedirectLogin, setToRedirectLogin] = useState(false)
 
   // Function to handle input field change and update state
   const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>, stateUpdater: (value: string) => void): void => {
@@ -82,19 +84,22 @@ export default function RegisterPatient() {
         formData.append(apiAttrName, data)
     }
 
-    const response = await fetch('/api/patient/register', {
-      method: 'POST',
-      body: formData,
-    })
+    // const response = await fetch('/api/patient/register', {
+    //   method: 'POST',
+    //   body: formData,
+    // })
 
     // Handle response if necessary
-    const data = await response.json()
+    // const data = await response.json()
     console.log(JSON.stringify(Object.fromEntries(formData)))
-    // console.log(data)
+
+    setToRedirectLogin(true)
+    console.log(toRedirectLogin)
   }
 
   return (
     <>
+      {toRedirectLogin && redirect('/login')}
       {/* <!-- Card Section --> */}
       <div className="max-w-4xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
         {/* <!-- Card --> */}

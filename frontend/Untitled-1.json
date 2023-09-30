@@ -67,3 +67,19 @@ frontend recc
     "district": "MBBS",
     "upozilla": "A"
 }
+
+description
+jwt of patient
+choose doctor
+choose hcenter
+
+{
+    "dr-select-checkbox-1-1": "on",
+    "hc-select-checkbox-2": "on",
+    "description": "",
+    "doctor_type": "সাধারণ (MBBS)",
+    "blood_group": "A",
+    "division": "পুরুষ",
+    "district": "Dhaka",
+    "upozilla": "A"
+}

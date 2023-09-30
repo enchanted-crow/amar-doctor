@@ -1,7 +1,7 @@
 // All data types are strings here as we will always send string data from frontend to backend
 
 export interface Doctor {
-  id: number | null;
+  id: number;
   email: string | null;
   password: string | null;
   name: string | null;
@@ -36,7 +36,7 @@ export interface Appointment {
 }
 
 export interface HealthCenter {
-  id: number | null;
+  id: number;
   email: string | null;
   password: string | null;
   name: string | null;

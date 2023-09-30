@@ -2,10 +2,8 @@
 'use client';
 
 import { useState, ChangeEvent, FormEvent } from 'react';
-import Image from 'next/image';
 import { dict } from '@/global/translation';
 import Link from 'next/link';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Doctor, Appointment, HealthCenter, Patient, Prescription, Problem, TimeSlot } from '@/app/models/dbModels';
 
@@ -20,7 +18,6 @@ const classnames = {
   "textbox": "py-2 px-3 pr-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 placeholder-gray-500 placeholder-opacity-90"
 }
 
-
 export default function NewAppointmentPatient() {
   // Define state variables for input fields
   const [description, setDescription] = useState('');
@@ -29,22 +26,92 @@ export default function NewAppointmentPatient() {
   const [upozilla, setUpozilla] = useState('');
   const [doctorType, setDoctorType] = useState('');
   const [department, setDepartment] = useState('');
-  const [aiResponseFetched, setAIresponseFeteched] = useState(true);
+  const [aiSuggestion, setAISuggestion] = useState("");
+  const [aiSuggestionFetched, setAISuggestionFetched] = useState(false);
+  const initialDoctors: Doctor[] = [
+    {
+      id: 1,
+      email: "",
+      password: "",
+      name: "1",
+      contact_no: "",
+      doctor_type: "",
+      department: "",
+      designation: "",
+      institution: "",
+      degrees: "",
+      chamber_location: "",
+      bmdc_registration_no: "", // Change to a number if it should be a number
+      bmdc_registration_year: "",
+      bio: "",
+      photo: [], // Provide actual image data here if needed
+      time_slot: [
+        { time: "1", max_count: 0 },
+        { time: "2", max_count: 0 },
 
+      ] as TimeSlot[],
+    }, {
+      id: 2,
+      email: "",
+      password: "",
+      name: "2",
+      contact_no: "",
+      doctor_type: "",
+      department: "",
+      designation: "",
+      institution: "",
+      degrees: "",
+      chamber_location: "",
+      bmdc_registration_no: "", // Change to a number if it should be a number
+      bmdc_registration_year: "",
+      bio: "",
+      photo: [], // Provide actual image data here if needed
+      time_slot: [
+        { time: "1", max_count: 0 },
+        { time: "2", max_count: 0 },
+
+      ] as TimeSlot[],
+    },
+  ]
+  const [suggestedDoctors, setSuggestedDoctors] = useState(initialDoctors)
+  const [doctorFetched, setDoctorFetched] = useState(false)
+  const initiaHCenters: HealthCenter[] = [
+    {
+      id: 1,
+      email: "",
+      password: "",
+      name: "1",
+      contact_no: "",
+      division: "",
+      district: "",
+      upozilla: "",
+      photo: [],
+      time_slot: [
+        { time: "", max_count: 0 },
+      ] as TimeSlot[],
+    },
+    {
+      id: 2,
+      email: "",
+      password: "",
+      name: "2",
+      contact_no: "",
+      division: "",
+      district: "",
+      upozilla: "",
+      photo: [],
+      time_slot: [
+        { time: "", max_count: 0 },
+      ] as TimeSlot[],
+    },
+  ]
+  const [suggestedHCenters, setSuggestedHCenters] = useState(initiaHCenters)
+  const [hCenterFetched, setHCenterFetched] = useState(false)
 
   // Function to handle input field change and update state
   const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>, stateUpdater: (value: string) => void): void => {
     const value = event.target.value;
     stateUpdater(value);
-  };
-
-  const handleDateChange = (date: { preventDefault: () => void; }) => {
-    // Prevent the default form submission behavior
-    if (date && date.preventDefault) {
-      date.preventDefault();
-    }
-    // Handle the selected date as needed
-    // setDateOfBirth(date);
   };
 
   async function onFormSubmit(event: FormEvent<HTMLFormElement>) {
@@ -54,23 +121,49 @@ export default function NewAppointmentPatient() {
       [key: string
       ]: string
     } = {
-      "af-account-full-name": "name",
-      "af-account-email": "email",
-      "af-account-password": "password",
-      "af-account-confirm-password": "d",
-      "af-account-phone": "contact_no",
-      "af-account-gender": "sex",
-      "af-account-blood-group": "blood_group",
-      // "af-account-date-of-birth": "dob", // handled seperately
+      "af-account-description": "description",
+
+      "af-account-doctor-type": "doctor_type",
+      "af-account-department": "blood_group",
+
       "af-account-division": "division",
       "af-account-district": "district",
       "af-account-upozilla": "upozilla",
     };
 
-    // console.log(JSON.stringify(dateOfBirth))
-
     const formData = new FormData(event.currentTarget)
-    // formData.append("dob", JSON.stringify(dateOfBirth))
+
+    let drKey = null;
+    let hcKey = null;
+
+    for (const [key, value] of formData.entries()) {
+      if (key.startsWith("dr-select-checkbox-")) {
+        drKey = key;
+      } else if (key.startsWith("hc-select-checkbox-")) {
+        hcKey = key;
+      }
+    }
+
+    // console.log("drKey:", drKey);
+    // console.log("hcKey:", hcKey);
+
+    if (drKey !== null) {
+      formData.delete(drKey);
+    }
+    if (hcKey !== null) {
+      formData.delete(hcKey);
+    }
+
+    const drMatch = drKey?.match(/dr-select-checkbox-(\d+)-(\d+)/);
+    const hcMatch = hcKey?.match(/hc-select-checkbox-(\d+)/);
+
+    const drID = drMatch ? drMatch[1] : null;
+    const drTimeSlotIdx = drMatch ? drMatch[2] : null;
+    const hcID = hcMatch ? hcMatch[1] : null;
+
+    console.log("drID: " + drID)
+    console.log("drTimeSlotIdx: " + drTimeSlotIdx)
+    console.log("hcID: " + hcID)
 
     for (const uiAttrName in ui2ApiAtrrNameMap) {
       let apiAttrName = ui2ApiAtrrNameMap[uiAttrName]
@@ -80,13 +173,13 @@ export default function NewAppointmentPatient() {
         formData.append(apiAttrName, data)
     }
 
-    const response = await fetch('/api/patient/register', {
-      method: 'POST',
-      body: formData,
-    })
+    // use the formdata data
+    // use drID, drTimeSlotIdx in suggestedDoctors to get the doctor and their time slot
+    // use hcID in similar way in suggestedHCenters
+    // do the api request
+    // reply e server ki dibe eta significant kisu? idk ota diye ki korte hobe
 
-    // Handle response if necessary
-    const data = await response.json()
+
     console.log(JSON.stringify(Object.fromEntries(formData)))
     // console.log(data)
   }
@@ -95,19 +188,37 @@ export default function NewAppointmentPatient() {
 
   async function handleAiCall() {
     console.log(description)
+    if (description == "") {
+      setAISuggestion("এআই সাজেশন জেনারেট করার জন্য অনুগ্রহ করে রোগের বিবরণ প্রদান করুন।")
+      setAISuggestionFetched(true)
+      return
+    }
 
+    // fetch the ai responmse
+    // store that response in aiSuggestion using setAISuggestion
 
+    setAISuggestionFetched(true)
   }
 
   async function handleFetchDoctorsByDept() {
     console.log(doctorType)
     console.log(department)
+
+    // fetch the doctor info
+    // store that info into suggestedDoctors
+
+    setDoctorFetched(true)
   }
 
   async function handleFetchHCenters() {
     console.log(division)
     console.log(district)
     console.log(upozilla)
+
+    // fetch the HCenter info
+    // store that info into suggestedHCenters
+
+    setHCenterFetched(true)
   }
 
   /***************** </TUBA> *****************/
@@ -152,23 +263,22 @@ export default function NewAppointmentPatient() {
               {/* <!-- End Col description--> */}
 
 
-
-              <div className="col-span-12">
-                <Link href="#">
-                  <p className='pl-1 pb-1 text-green-500 font-mono font-normal hover:text-green-700'>✨ AI generated suggestion (experimental)</p>
-                </Link>
-                <div className="h-[36] flex flex-col group bg-white border shadow-sm rounded-xl overflow-hidden transition dark:bg-gray-800 dark:border-gray-700 dark:shadow-slate-700/[.7]">
-                  <div className="items-stretch">
-                    <div className="p-8">
-                      <p className="mt-2 text-gray-800 dark:text-gray-400">
-                        {`রোগের বিবরণের উপর ভিত্তি করে আপনি নিচের প্রকারের ডাক্তারদের সাথে যোগাযোগ করতে পারেন।
-                        ১। Cardiologist
-                        ২। Gastrologist`}
-                      </p>
+              {aiSuggestionFetched &&
+                <div className="col-span-12">
+                  <Link href="#">
+                    <p className='pl-1 pb-1 text-green-500 font-mono font-normal hover:text-green-700'>✨ AI generated suggestion (experimental)</p>
+                  </Link>
+                  <div className="h-[36] flex flex-col group bg-white border shadow-sm rounded-xl overflow-hidden transition dark:bg-gray-800 dark:border-gray-700 dark:shadow-slate-700/[.7]">
+                    <div className="items-stretch">
+                      <div className="p-8">
+                        <p className="mt-2 text-gray-800 dark:text-gray-400">
+                          {aiSuggestion}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              }
               {/* End col AI suggestion */}
 
               <div className="flex col-span-12 justify-end">
@@ -178,7 +288,7 @@ export default function NewAppointmentPatient() {
                   className="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800"
                 // onClick={(e) => { onClickFormSubmit }}
                 >
-                  জেনারেট করুন
+                  এআই সাজেশন জেনারেট করুন
                 </button>
               </div>
 
@@ -253,70 +363,63 @@ export default function NewAppointmentPatient() {
                 </button>
               </div>
 
-              <div className='col-span-12'>
-                <div className="flex flex-col">
-                  <div className="-m-1.5 overflow-x-auto">
-                    <div className="p-1.5 min-w-full inline-block align-middle">
-                      <div className="border rounded-lg shadow overflow-hidden dark:border-gray-700 dark:shadow-gray-900">
-                        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                          <thead className="bg-gray-50 dark:bg-gray-700">
-                            <tr>
-                              <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400">সিলেক্ট</th>
-                              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">নাম</th>
-                              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">পদবি</th>
-                              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">প্রতিষ্ঠান</th>
-                              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">সময়</th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                            <tr>
-                              <td className="flex flex-grow p-2 justify-center">
-                                <label htmlFor="dr-select-checkbox" >
-                                  <input type="checkbox" className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 pointer-events-none focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" id="dr-select-checkbox">
-                                  </input>
-                                </label>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">John Brown</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">45</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">New York No. 1 Lake Park</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">New York No. 1 Lake Park</td>
-                              {/* <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a className="text-blue-500 hover:text-blue-700" href="#">Delete</a>
-                              </td> */}
-                            </tr>
+              {doctorFetched &&
+                <div className='col-span-12'>
+                  <div className="flex flex-col">
+                    <div className="-m-1.5 overflow-x-auto">
+                      <div className="p-1.5 min-w-full inline-block align-middle">
+                        <div className="border rounded-lg shadow overflow-hidden dark:border-gray-700 dark:shadow-gray-900">
+                          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead className="bg-gray-50 dark:bg-gray-700">
+                              <tr>
+                                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400">সিলেক্ট</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">নাম</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">পদবি</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">প্রতিষ্ঠান</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">সময়</th>
+                              </tr>
+                            </thead>
 
-                            <tr>
-                              <td className="flex flex-grow p-2 justify-center">
-                                <label htmlFor="dr-select-checkbox" className="p-2">
-                                  <input type="checkbox" className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 pointer-events-none focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" id="dr-select-checkbox">
-                                  </input>
-                                </label>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">Jim Green</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">27</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">London No. 1 Lake Park</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">New York No. 1 Lake Park</td>
-                            </tr>
 
-                            <tr>
-                              <td className="flex flex-grow p-2 justify-center">
-                                <label htmlFor="dr-select-checkbox" className="p-2">
-                                  <input type="checkbox" className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 pointer-events-none focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" id="hs-checkbox-in-form">
-                                  </input>
-                                </label>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">Joe Black</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">31</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">Sidney No. 1 Lake Park</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">New York No. 1 Lake Park</td>
-                            </tr>
-                          </tbody>
-                        </table>
+                            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+
+                              {suggestedDoctors.map((doctor) => (
+                                doctor.time_slot?.map((timeSlot, index) => (
+                                  <tr key={`${doctor.id}-${index}`}>
+                                    <td className="flex flex-grow p-2 justify-center">
+                                      <label htmlFor={`dr-select-checkbox-${doctor.id}-${index}`}>
+                                        <input
+                                          type="checkbox"
+                                          className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 pointer-events-none focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
+                                          id={`dr-select-checkbox-${doctor.id}-${index}`}
+                                          name={`dr-select-checkbox-${doctor.id}-${index}`}
+                                        />
+                                      </label>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
+                                      {doctor.name}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                      {doctor.designation}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                      {doctor.institution}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                      {timeSlot.time}
+                                    </td>
+                                  </tr>
+                                ))
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              }
+
 
               <div className="col-span-12 my-4 border-b border-gray-900/10"></div>
 
@@ -413,65 +516,55 @@ export default function NewAppointmentPatient() {
                 </button>
               </div>
 
-              <div className='col-span-12'>
-                <div className="flex flex-col">
-                  <div className="-m-1.5 overflow-x-auto">
-                    <div className="p-1.5 min-w-full inline-block align-middle">
-                      <div className="border rounded-lg shadow overflow-hidden dark:border-gray-700 dark:shadow-gray-900">
-                        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                          <thead className="bg-gray-50 dark:bg-gray-700">
-                            <tr>
-                              <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400">সিলেক্ট</th>
-                              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">নাম</th>
-                              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">ঠিকানা</th>
-                              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">সময়</th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                            <tr>
-                              <td className="flex flex-grow p-2 justify-center">
-                                <label htmlFor="hc-select-checkbox" className="p-2">
-                                  <input type="checkbox" className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 pointer-events-none focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" id="hc-select-checkbox">
-                                  </input>
-                                </label>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">John Brown</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">New York No. 1 Lake Park</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">45</td>
-                            </tr>
+              {hCenterFetched &&
+                <div className='col-span-12'>
+                  <div className="flex flex-col">
+                    <div className="-m-1.5 overflow-x-auto">
+                      <div className="p-1.5 min-w-full inline-block align-middle">
+                        <div className="border rounded-lg shadow overflow-hidden dark:border-gray-700 dark:shadow-gray-900">
+                          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead className="bg-gray-50 dark:bg-gray-700">
+                              <tr>
+                                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400">সিলেক্ট</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">নাম</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">ফোন নাম্বার</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">ইমেইল</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
 
-                            <tr>
-                              <td className="flex flex-grow p-2 justify-center">
-                                <label htmlFor="hc-select-checkbox" className="p-2">
-                                  <input type="checkbox" className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 pointer-events-none focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" id="hc-select-checkbox">
-                                  </input>
-                                </label>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">Jim Green</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">London No. 1 Lake Park</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">27</td>
-                            </tr>
-
-                            <tr>
-                              <td className="flex flex-grow p-2 justify-center">
-                                <label htmlFor="hc-select-checkbox" className="p-2">
-                                  <input type="checkbox" className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 pointer-events-none focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" id="hs-checkbox-in-form">
-                                  </input>
-                                </label>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">Joe Black</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">Sidney No. 1 Lake Park</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">31</td>
-                            </tr>
-                          </tbody>
-                        </table>
+                              {suggestedHCenters.map((hCenter) => (
+                                <tr key={`${hCenter.id}`}>
+                                  <td className="flex flex-grow p-2 justify-center">
+                                    <label htmlFor={`hc-select-checkbox-${hCenter.id}`}>
+                                      <input
+                                        type="checkbox"
+                                        className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 pointer-events-none focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
+                                        id={`hc-select-checkbox-${hCenter.id}`}
+                                        name={`hc-select-checkbox-${hCenter.id}`}
+                                      />
+                                    </label>
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
+                                    {hCenter.name}
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                    {hCenter.contact_no}
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                    {hCenter.email}
+                                  </td>
+                                </tr>
+                              )
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-
-
+              }
 
 
             </div>

@@ -16,7 +16,7 @@ const classnames = {
   "textbox": "py-2 px-3 pr-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 placeholder-gray-500 placeholder-opacity-90"
 }
 
-interface TimeSlot {
+interface UITimeSlot {
   id: number;
   day: string;
   startTime: string;
@@ -48,7 +48,7 @@ export default function RegisterDoctor() {
   const [chamberLocation, setChamberLocation] = useState('');
   const [bio, setBio] = useState('');
   const [profileImage, setProfileImage] = useState('../../../../public/images/signup/user_profile_picture_default.jpg');
-  const initialTimeSlots: TimeSlot[] = [
+  const initialTimeSlots: UITimeSlot[] = [
     {
       id: 1,
       day: days[0],
@@ -65,7 +65,7 @@ export default function RegisterDoctor() {
     // Generate a unique ID for the new div
     const newId = Math.max(...timeSlots.map((slot) => slot.id), 0) + 1;
 
-    const newSlot: TimeSlot = {
+    const newSlot: UITimeSlot = {
       id: newId, // You can use a unique ID generator
       day: days[0],
       startTime: times[0],
@@ -130,7 +130,7 @@ export default function RegisterDoctor() {
       // "af-account-timeslots": "time_slot", // this has been handled seperately
     };
 
-    function uiTimeslot2Api(ui_timeslot: TimeSlot) {
+    function uiTimeslot2Api(ui_timeslot: UITimeSlot) {
       let dayBn2EnApi: MapStr2Str = {}
 
       dayBn2EnApi = {

@@ -6,7 +6,6 @@ export async function POST(request: NextRequest) {
   return NextResponse.json(jsonForm)
 }
 
-
 export async function GET() {
   return new NextResponse("okay!")
 }
