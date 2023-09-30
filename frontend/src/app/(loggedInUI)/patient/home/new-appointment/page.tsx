@@ -144,9 +144,6 @@ export default function NewAppointmentPatient() {
       }
     }
 
-    // console.log("drKey:", drKey);
-    // console.log("hcKey:", hcKey);
-
     if (drKey !== null) {
       formData.delete(drKey);
     }

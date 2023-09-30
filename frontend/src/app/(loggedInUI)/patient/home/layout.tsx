@@ -45,20 +45,20 @@ export default function DashboardLayoutPatient({
           </div>
           <div id="navbar-collapse-with-animation" className="hs-collapse hidden overflow-hidden transition-all duration-300 basis-full grow sm:block">
             <div className="flex flex-col gap-y-4 gap-x-0 mt-5 sm:flex-row sm:items-center sm:justify-end sm:gap-y-0 sm:gap-x-7 sm:mt-0 sm:pl-7">
-              <p className="pt-1 font-medium text-gray-800 sm:py-6 dark:text-gray-400">
+              <div className="pt-1 text-gray-800 sm:py-6 dark:text-gray-400">
                 {(selectedPageName == 'current-meeting') &&
-                  <>
+                  <p className="font-medium">
                     চলমান মিটিং
-                  </>}
+                  </p>}
                 {(selectedPageName == 'all-appointments') &&
-                  <>
+                  <p className="font-medium">
                     সকল অ্যাপয়েন্টমেন্ট
-                  </>}
+                  </p>}
                 {(selectedPageName == 'new-appointment') &&
-                  <>
+                  <p className="font-medium">
                     নতুন অ্যাপয়েন্টমেন্ট
-                  </>}
-              </p>
+                  </p>}
+              </div>
 
               <Link className="flex items-center gap-x-2 font-medium text-gray-500 hover:text-gray-600 sm:border-l sm:border-gray-300 sm:my-6 sm:pl-6 dark:border-gray-700 dark:text-gray-400 dark:hover:text-blue-500" href="#">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">

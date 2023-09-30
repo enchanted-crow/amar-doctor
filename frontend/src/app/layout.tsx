@@ -19,7 +19,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>{children}</body>
-      <script src="./node_modules/preline/dist/preline.js"></script>
     </html>
   )
 }

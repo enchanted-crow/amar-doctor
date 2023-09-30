@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 
 
 const divisions = ["ময়মনসিংহ", "বরিশাল", "চট্টগ্রাম", "ঢাকা", "খুলনা", "রাজশাহী", "রংপুর", "সিলেট"];
-const upozillas = ["ময়মনসিংহ সদর", "মুক্তাগাছা", "ভালুকা ", "হালুয়াঘাট" , "গৌরীপুর" , "ধোবাউড়া" , "ফুলবাড়িয়া ", "গফরগাঁও" , "ত্রিশাল" , "ফুলপুর" , "নান্দাইল" , "ঈশ্বরগঞ্জ"];
+const upozillas = ["ময়মনসিংহ সদর", "মুক্তাগাছা", "ভালুকা ", "হালুয়াঘাট", "গৌরীপুর", "ধোবাউড়া", "ফুলবাড়িয়া ", "গফরগাঁও", "ত্রিশাল", "ফুলপুর", "নান্দাইল", "ঈশ্বরগঞ্জ"];
 const districts = ["ময়মনসিংহ", "নেত্রকোণা", "শেরপুর", "জামালপুর"];
 const genders = ["পুরুষ", "মহিলা", "অন্যান্য"];
 const blood_groups = ["O+", "A+", "B+", "AB+", "O-", "A-", "B-", "AB-"];
@@ -55,8 +55,8 @@ export default function RegisterPatient() {
   };
 
   async function onFormSubmit(event: FormEvent<HTMLFormElement>) {
-    const router = useRouter()
     event.preventDefault()
+    // alert("a1")
 
     const ui2ApiAtrrNameMap: {
       [key: string
@@ -88,15 +88,15 @@ export default function RegisterPatient() {
         formData.append(apiAttrName, data)
     }
 
-    const response = await fetch('http://localhost:8080/api/patient/register', {
+    const response = await fetch('http://amardoctor.onrender.com/api/patient/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json', // Set the correct Content-Type
       },
       body: JSON.stringify(Object.fromEntries(formData)),
-    
     })
 
+    alert("requesting")
     // Handle response if necessary
     const data = await response.json()
     console.log(JSON.stringify(Object.fromEntries(formData)))
@@ -105,19 +105,17 @@ export default function RegisterPatient() {
     const token = data["token"]
     console.log(token)
 
-    
-    if(token !== null){
-      
-    setToRedirectLogin(true)
+    alert("a3")
 
+    if (token) {
+      setToRedirectLogin(true)
+      console.log("hoise")
+      alert("ok")
     }
-
-
   }
 
   return (
     <>
-      {toRedirectLogin && redirect('/login')}
       {/* <!-- Card Section --> */}
       <div className="max-w-4xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
         {/* <!-- Card --> */}
