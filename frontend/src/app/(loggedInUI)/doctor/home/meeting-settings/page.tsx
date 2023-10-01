@@ -43,9 +43,20 @@ function MeetingSettings() {
                         </input>
                       </div>
                     </div>
+
+                    <div className="pt-3 flex col-span-12 justify-end">
+                      <button
+                        type="button"
+                        // onClick={(e) => { handleAiCall() }}
+                        className="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800">
+                        সেভ করুন
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
+
+
 
               {/* <div className="flex flex-col group row-span-4 col-span-2 bg-white border shadow-sm rounded-xl overflow-hidden hover:shadow-lg transition dark:bg-gray-800 dark:border-gray-700 dark:shadow-slate-700/[.7]">
                 <div className="item-stretch rounded-xl">
@@ -89,7 +100,7 @@ function MeetingSettings() {
             </div>
           </div>
         </div>
-      </div>
+      </div >
     </>
   )
 }
