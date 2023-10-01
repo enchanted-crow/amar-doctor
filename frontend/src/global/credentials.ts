@@ -75,7 +75,7 @@ export class LoginCredentials {
     if (value == UserTypes.patient) toStore = "patient"
     if (value == UserTypes.health_center) toStore = "health_center"
 
-    localStorage.setItem("token", toStore)
+    localStorage.setItem("userType", toStore)
   }
 
 }

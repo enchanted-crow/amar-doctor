@@ -3,16 +3,9 @@ import Link from "next/link";
 import { redirect } from 'next/navigation';
 
 export default function DoctorHome() {
-  LoginCredentials.isLoggedIn = true
-  LoginCredentials.userType = UserTypes.doctor
-
-  console.log(LoginCredentials.isLoggedIn)
-  console.log(LoginCredentials.userType)
-
   return (
     <>
-      {(LoginCredentials.isLoggedIn == true && LoginCredentials.userType == UserTypes.doctor) ? <_DoctorHome />
-        : redirect('/login')}
+      <_DoctorHome />
     </>
   )
 }

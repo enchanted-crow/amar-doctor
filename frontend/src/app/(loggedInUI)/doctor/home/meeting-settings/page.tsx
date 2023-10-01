@@ -1,4 +1,6 @@
-import React from 'react'
+'use client';
+
+import React, { ChangeEvent, useState } from 'react'
 
 const classnames = {
   "textbox": "py-2 px-3 pr-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 placeholder-gray-500 placeholder-opacity-90"
@@ -6,6 +8,19 @@ const classnames = {
 
 
 function MeetingSettings() {
+  const [meetingLink, setMeetingLink] = useState('')
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>, stateUpdater: (value: string) => void): void => {
+    const value = event.target.value;
+    stateUpdater(value);
+  };
+
+  // TUBA
+
+  function handleSaveLink() {
+
+  }
+
   return (
     <>
       <div className="w-full h-screen">
@@ -37,7 +52,7 @@ function MeetingSettings() {
                           id="af-account-phone"
                           name="af-account-phone"
                           type="text"
-                          // onChange={(e) => handleInputChange(e, setPhone)}
+                          onChange={(e) => handleInputChange(e, setMeetingLink)}
                           className={classnames.textbox}
                           placeholder={"মিটিং লিংক প্রদান করুন"}>
                         </input>
@@ -47,7 +62,8 @@ function MeetingSettings() {
                     <div className="pt-3 flex col-span-12 justify-end">
                       <button
                         type="button"
-                        // onClick={(e) => { handleAiCall() }}
+                        name="save-link"
+                        onClick={(e) => { handleSaveLink() }}
                         className="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800">
                         সেভ করুন
                       </button>
