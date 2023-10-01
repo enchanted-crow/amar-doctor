@@ -103,7 +103,7 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public String getDepartmentSuggestion(String role, String problemDesc) {
         if(role.equals("patient")){
-            String userInput = "provide the medical department names to be contacted for the following problem (Just mention the department names, no need for any description): " + problemDesc;
+            String userInput = "provide the medical department names to be contacted for the following problem (Just mention the department names from this list [Medicine, Neuromedicine, Physical Medicine, Surgery, Neurosurgery, Pediatric Surgery, Orthopedic Surgery, Burn Plastic & Reconstructive Surgery, Dermatology, Nephrology, Psychiatry, Cardiology & CCU, Pediatrics, Medical Oncology, Gastroenterology, Radiology & Imaging, Anesthesiology, Traumatology, Urology, ENT, Ophthalmology, Gynae & Obstetrics, Transfusion Medicine, Pediatric Nephrology, Hepatology, Neurology, Oral & Maxillofacial Surgery, Children Dentistry, Conservative Dentistry & Endodontics, Orthodontics, Prosthodontics], no need for any description): " + problemDesc;
 
             try {
                 URL obj = new URL(apiUrl);

@@ -22,4 +22,6 @@ public interface HealthCenterService {
     List<HealthCenter> getHealthCenterByUpozilla(String upozilla);
 
     List<HealthCenter> getHealthCenterSuggestion(Patient patient);
+
+    List<HealthCenter> getHealthCenterSuggestionByAddrr(String div, String dist, String upo);
 }

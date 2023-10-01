@@ -24,9 +24,8 @@ public class PrescriptionResource {
     AppointmentService appointmentService;
 
     @PostMapping("/create")  //create
-    public ResponseEntity<Integer> createPrescription(HttpServletRequest request, @RequestBody Map<String, Object> prescriptionMap) {
-        Integer id = (Integer) request.getAttribute("Id");
-        String role = (String) request.getAttribute("role");
+    public ResponseEntity<Integer> createPrescription(@RequestBody Map<String, Object> prescriptionMap) {
+        String role = "doctor";
 
         Integer appointmentId = Integer.parseInt((String) prescriptionMap.get("appointment_id"));
         Appointment appointment = appointmentService.getAppointmentById(appointmentId);

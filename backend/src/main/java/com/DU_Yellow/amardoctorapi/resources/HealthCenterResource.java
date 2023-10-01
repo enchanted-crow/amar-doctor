@@ -1,6 +1,7 @@
 package com.DU_Yellow.amardoctorapi.resources;
 
 import com.DU_Yellow.amardoctorapi.Constant;
+import com.DU_Yellow.amardoctorapi.JWTUtility;
 import com.DU_Yellow.amardoctorapi.domain.Doctor;
 import com.DU_Yellow.amardoctorapi.domain.HealthCenter;
 import com.DU_Yellow.amardoctorapi.domain.Patient;
@@ -23,6 +24,8 @@ import java.util.*;
 @RestController
 @RequestMapping("api/healthCenter")
 public class HealthCenterResource {
+
+    JWTUtility jwtUtility = new JWTUtility();
 
     @Autowired
     HealthCenterService hcService;
@@ -127,11 +130,18 @@ public class HealthCenterResource {
     }
 
     @GetMapping("/healthCenterSuggestion")
-    public List<HealthCenter> getHealthCentersSuggestion(HttpServletRequest request) {
-        Integer id = (Integer) request.getAttribute("Id");
-        String role = (String) request.getAttribute("role");
+    public List<HealthCenter> getHealthCentersSuggestion(@RequestParam String jwt) {
+        Integer id = (Integer) jwtUtility.getId(jwt);
+        String role = "patient";
         Patient patient = patientService.getProfileById(role, id);
         return hcService.getHealthCenterSuggestion(patient);
+    }
+
+
+    @GetMapping("/hcByAddrss")
+    public List<HealthCenter> getHealthCentersSugg(@RequestParam String div, @RequestParam String dist, @RequestParam String upo) {
+
+        return hcService.getHealthCenterSuggestionByAddrr(div, dist, upo);
     }
 
 

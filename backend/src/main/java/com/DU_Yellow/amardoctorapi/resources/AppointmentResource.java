@@ -1,8 +1,10 @@
 package com.DU_Yellow.amardoctorapi.resources;
 
+import com.DU_Yellow.amardoctorapi.JWTUtility;
 import com.DU_Yellow.amardoctorapi.domain.*;
 import com.DU_Yellow.amardoctorapi.repositories.*;
 import com.DU_Yellow.amardoctorapi.services.*;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,8 @@ public class AppointmentResource {
     private final DoctorRepository doctorRepository;
     private final HealthCenterRepository healthCenterRepository;
     private final PrescriptionRepository prescriptionRepository;
+
+    private JWTUtility jwtUtility = new JWTUtility();
 
     public AppointmentResource(AppointmentRepository appointmentRepository, PatientRepository patientRepository, ProblemRepository problemRepository, DoctorRepository doctorRepository, HealthCenterRepository healthCenterRepository, PrescriptionRepository prescriptionRepository) {
         this.appointmentRepository = appointmentRepository;
@@ -46,9 +50,9 @@ public class AppointmentResource {
     PrescriptionService prescriptionService;
 
     @PostMapping("/create")  //create
-    public ResponseEntity<Integer> createApppointment(HttpServletRequest request, @RequestBody Map<String, Object> appointmentMap) {
-        Integer id = (Integer) request.getAttribute("Id");
-        String role = (String) request.getAttribute("role");
+    public ResponseEntity<Integer> createApppointment(@RequestParam String jwt, @RequestBody Map<String, Object> appointmentMap) {
+        Integer id = (Integer) jwtUtility.getId(jwt);
+        String role = "patient";
         Patient patient = patientService.getProfileById(role, id);
 
         Integer problemId = Integer.parseInt((String) appointmentMap.get("problem_id"));
@@ -75,39 +79,64 @@ public class AppointmentResource {
     }
 
     @GetMapping("/appointmentById") //read
-    public ResponseEntity<Appointment> getAppointmentById(HttpServletRequest request, @RequestParam Integer appointmentId) {
-        Integer patientId = (Integer) request.getAttribute("Id");
+    public ResponseEntity<Appointment> getAppointmentById(@RequestParam Integer appointmentId) {
         Appointment appointment = appointmentService.getAppointmentById(appointmentId);
         return new ResponseEntity<>(appointment, HttpStatus.OK);
     }
 
+//    @GetMapping("/appointmentsByPatient") //read
+//    public List<Appointment> getAllAppointmentByPatient(HttpServletRequest request) {
+//        Integer patientId = (Integer) request.getAttribute("Id");
+//        String role = (String) request.getAttribute("role");
+//        Patient patient = patientService.getProfileById(role, patientId);
+//        return appointmentService.getAppointmentByPatient(role, patient);
+//    }
+//
+//    @GetMapping("/appointmentsByDoctor") //read
+//    public List<Appointment> getAllAppointmentByDoctor(HttpServletRequest request) {
+//        Integer doctorId = (Integer) request.getAttribute("Id");
+//        String role = (String) request.getAttribute("role");
+//        Doctor doctor = doctorService.getProfileById(doctorId);
+//        return appointmentService.getAppointmentByDoctor(role, doctor);
+//    }
+//
+//    @GetMapping("/appointmentsByHealthCenter") //read
+//    public List<Appointment> getAllAppointmentByHealthCenter(HttpServletRequest request) {
+//        Integer hcId = (Integer) request.getAttribute("Id");
+//        String role = (String) request.getAttribute("role");
+//        HealthCenter hc = healthCenterService.getProfileById(hcId);
+//        return appointmentService.getAppointmentByHealthCenter(role, hc);
+//    }
+
     @GetMapping("/appointmentsByPatient") //read
-    public List<Appointment> getAllAppointmentByPatient(HttpServletRequest request) {
-        Integer patientId = (Integer) request.getAttribute("Id");
-        String role = (String) request.getAttribute("role");
+    public List<Appointment> getAllAppointmentByPatient(@RequestParam String jwt) {
+
+
+        Integer patientId = (Integer) jwtUtility.getId(jwt);
+        String role = "patient";
         Patient patient = patientService.getProfileById(role, patientId);
         return appointmentService.getAppointmentByPatient(role, patient);
     }
 
     @GetMapping("/appointmentsByDoctor") //read
-    public List<Appointment> getAllAppointmentByDoctor(HttpServletRequest request) {
-        Integer doctorId = (Integer) request.getAttribute("Id");
-        String role = (String) request.getAttribute("role");
+    public List<Appointment> getAllAppointmentByDoctor(@RequestParam String jwt) {
+        Integer doctorId = (Integer) jwtUtility.getId(jwt);
+        String role = "doctor";
         Doctor doctor = doctorService.getProfileById(doctorId);
         return appointmentService.getAppointmentByDoctor(role, doctor);
     }
 
     @GetMapping("/appointmentsByHealthCenter") //read
-    public List<Appointment> getAllAppointmentByHealthCenter(HttpServletRequest request) {
-        Integer hcId = (Integer) request.getAttribute("Id");
-        String role = (String) request.getAttribute("role");
+    public List<Appointment> getAllAppointmentByHealthCenter(@RequestParam String jwt) {
+        Integer hcId = (Integer) jwtUtility.getId(jwt);
+        String role = "health_center";
         HealthCenter hc = healthCenterService.getProfileById(hcId);
         return appointmentService.getAppointmentByHealthCenter(role, hc);
     }
 
     @PutMapping("/updateMeetingLink")
-    public ResponseEntity<String> updateMeetingLink(HttpServletRequest request, @RequestBody Map<String, String> meeting){
-        String role = (String) request.getAttribute("role");
+    public ResponseEntity<String> updateMeetingLink(@RequestBody Map<String, String> meeting){
+        String role = "doctor";
         String dateTime = (String) meeting.get("date_time") ;
         String meetingLink = (String) meeting.get("meeting_link");
 
@@ -118,9 +147,9 @@ public class AppointmentResource {
     }
 
     @PutMapping("/updatePaymentStatus")
-    public ResponseEntity<String> updatePaymentStatus(HttpServletRequest request, @RequestParam Integer appointmentId){
-        Integer hcId = (Integer) request.getAttribute("Id");
-        String role = (String) request.getAttribute("role");
+    public ResponseEntity<String> updatePaymentStatus(@RequestParam Integer appointmentId){
+
+        String role = "health_center";
         appointmentService.updatePaymentStatus(role, appointmentId);
         return new ResponseEntity<>(HttpStatus.OK);
 
