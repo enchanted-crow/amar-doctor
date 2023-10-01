@@ -100,4 +100,23 @@ public class HealthCenterServiceImpl implements HealthCenterService{
         else
             return getHealthCenterByUpozilla(patient.getUpozilla());
     }
+
+    @Override
+    public List<HealthCenter> getHealthCenterSuggestionByAddrr(String div, String dist, String upo) {
+        if(getHealthCenterByUpozilla(upo).isEmpty()){
+            if(getHealthCenterByDistrict(dist).isEmpty()){
+                if(getHealthCenterByDivision(div).isEmpty()){
+                    return hcRepository.findAll();
+                }
+                return getHealthCenterByDivision(div);
+
+            }
+            else
+                return getHealthCenterByDistrict(dist);
+
+        }
+        else
+            return getHealthCenterByUpozilla(upo);
+    }
+
 }

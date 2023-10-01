@@ -1,5 +1,6 @@
 package com.DU_Yellow.amardoctorapi.resources;
 
+import com.DU_Yellow.amardoctorapi.JWTUtility;
 import com.DU_Yellow.amardoctorapi.domain.Patient;
 import com.DU_Yellow.amardoctorapi.domain.Problem;
 import com.DU_Yellow.amardoctorapi.services.PatientService;
@@ -16,6 +17,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("api/problem")
 public class ProblemResource {
+    JWTUtility jwtUtility = new JWTUtility();
 
     @Autowired
     ProblemService problemService;
@@ -24,9 +26,9 @@ public class ProblemResource {
     PatientService patientService;
 
     @PostMapping("/create")  //create
-    public ResponseEntity<Integer> createProblem(HttpServletRequest request, @RequestBody Map<String, Object> problemMap) {
-        Integer id = (Integer) request.getAttribute("Id");
-        String role = (String) request.getAttribute("role");
+    public ResponseEntity<Integer> createProblem(@RequestParam String jwt, @RequestBody Map<String, Object> problemMap) {
+        Integer id = (Integer) jwtUtility.getId(jwt);
+        String role = "patient";
 
         Patient patient = patientService.getProfileById(role, id);
         String description = (String) problemMap.get("description");

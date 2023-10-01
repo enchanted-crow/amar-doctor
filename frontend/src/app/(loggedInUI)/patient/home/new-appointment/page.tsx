@@ -11,7 +11,7 @@ import { url } from 'inspector';
 
 
 const divisions = ["ময়মনসিংহ", "বরিশাল", "চট্টগ্রাম", "ঢাকা", "খুলনা", "রাজশাহী", "রংপুর", "সিলেট"];
-const upozillas = ["ময়মনসিংহ সদর", "মুক্তাগাছা", "ভালুকা ", "হালুয়াঘাট", "গৌরীপুর", "ধোবাউড়া", "ফুলবাড়িয়া ", "গফরগাঁও", "ত্রিশাল", "ফুলপুর", "নান্দাইল", "ঈশ্বরগঞ্জ"];
+const upozillas = ["ময়মনসিংহ সদর", "মুক্তাগাছা", "ভালুকা", "হালুয়াঘাট", "গৌরীপুর", "ধোবাউড়া", "ফুলবাড়িয়া ", "গফরগাঁও", "ত্রিশাল", "ফুলপুর", "নান্দাইল", "ঈশ্বরগঞ্জ"];
 const districts = ["ময়মনসিংহ", "নেত্রকোণা", "শেরপুর", "জামালপুর"];
 const doctor_type = ["MBBS", "BDS"];
 const departments = [
@@ -228,7 +228,7 @@ export default function NewAppointmentPatient() {
 
     alert("Generating")
     // Handle response if necessary
-    const data = await response.json()
+    const data = await response.text()
     //console.log(JSON.stringify(Object.fromEntries(formData)))
     console.log(data)
     setAISuggestion(data.toString())
@@ -240,9 +240,11 @@ export default function NewAppointmentPatient() {
   }
 
   async function handleFetchDoctorsByDept() {
+    setDoctorType("MBBS")
+    setDepartment("Medicine")
     console.log(doctorType)
     console.log(department)
-    const url = 'http://localhost:8080/api/doctor/doctorsByDepartmentAndType?type=MBBS&dept=Medicine';
+    const url = `http://localhost:8080/api/doctor/doctorsByDepartmentAndType?type=${doctorType}&dept=${department}`;
 
     // fetch the doctor info
     // store that info into suggestedDoctors
@@ -264,18 +266,18 @@ export default function NewAppointmentPatient() {
     console.log(district)
     console.log(upozilla)
 
+    setDivision("ময়মনসিংহ")
+    setDistrict("ময়মনসিংহ")
+    setUpozilla("ভালুকা")
+
     const jwt = 'eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2OTYxMzQ1NjksImV4cCI6MTY5NjE0ODk2OSwiSWQiOjMwMiwiZW1haWwiOiJtdWppYnVsMTIzQGdtYWlsLmNvbSIsInJvbGUiOiJwYXRpZW50In0.SM0-VO6GQGvf2rQGU7TmsnlU-c6RC6_u_NGuPd_ShyY'
 
     
 
     // fetch the HCenter info
     // store that info into suggestedHCenters
-    const response = await fetch('http://localhost:8080/api/healthCenter/healthCenterSuggestion', {
+    const response = await fetch(`http://localhost:8080/api/healthCenter/hcByAddrss?div=${division}&dist=${district}&upo=${upozilla}`, {
       method: 'GET',
-      headers: {
-        'Authorization' : `Bearer ${jwt}`,
-        //'Content-Type': 'application/json', // Set the correct Content-Type
-      },
       
     })
       alert("Searching")
@@ -284,9 +286,14 @@ export default function NewAppointmentPatient() {
       //console.log(JSON.stringify(Object.fromEntries(formData)))
       console.log(data)
 
-
+    setSuggestedHCenters(data)
     setHCenterFetched(true)
   }
+
+  
+
+
+  //appointment create korar function koi??
 
   /***************** </TUBA> *****************/
 

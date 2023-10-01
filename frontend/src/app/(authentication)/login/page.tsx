@@ -43,16 +43,16 @@ const Login = () => {
     console.log(token)
 
     if (token) {
-      LoginCredentials.authToken = token
-      LoginCredentials.isLoggedIn = true
+      //LoginCredentials.authToken = token
+      //LoginCredentials.isLoggedIn = true
       if (acc_type == "রোগী") {
-        LoginCredentials.userType = UserTypes.patient
+        LoginCredentials.saveLogin(UserTypes.patient, token )
       }
       if (acc_type == "ডাক্তার") {
-        LoginCredentials.userType = UserTypes.doctor
+        LoginCredentials.saveLogin(UserTypes.doctor, token )
       }
       if (acc_type == "হেলথ সেন্টার") {
-        LoginCredentials.userType = UserTypes.health_center
+        LoginCredentials.saveLogin(UserTypes.health_center, token )
       }
       console.log("hoise")
       alert("login successful")

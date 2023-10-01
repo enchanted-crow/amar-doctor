@@ -2,6 +2,7 @@ package com.DU_Yellow.amardoctorapi.resources;
 
 
 import com.DU_Yellow.amardoctorapi.Constant;
+import com.DU_Yellow.amardoctorapi.JWTUtility;
 import com.DU_Yellow.amardoctorapi.domain.Doctor;
 import com.DU_Yellow.amardoctorapi.domain.TimeSlot;
 import com.DU_Yellow.amardoctorapi.services.DoctorService;
@@ -21,6 +22,8 @@ import java.util.*;
 @RestController
 @RequestMapping("api/doctor")
 public class DoctorResource {
+    JWTUtility jwtUtility = new JWTUtility();
+
     @Autowired
     DoctorService doctorService;
 
@@ -115,17 +118,17 @@ public class DoctorResource {
     }
 
     @GetMapping("/timeSlot") //read
-    public ResponseEntity<List<TimeSlot>> getTimeSlotByJWT(HttpServletRequest request) {
-        Integer id = (Integer) request.getAttribute("Id");
-        String role = (String) request.getAttribute("role");
+    public ResponseEntity<List<TimeSlot>> getTimeSlotByJWT(@RequestParam String jwt) {
+        Integer id = (Integer) jwtUtility.getId(jwt);
+        String role = "doctor";
         List<TimeSlot> timeSlots = doctorService.getTimeSlotById(role, id);
         return new ResponseEntity<>(timeSlots, HttpStatus.OK);
     }
 
     @GetMapping("/timeSlotById") //read
-    public ResponseEntity<List<TimeSlot>> getTimeSlotByJWT(HttpServletRequest request, @RequestParam Integer id) {
+    public ResponseEntity<List<TimeSlot>> getTimeSlotByJWT(@RequestParam Integer id) {
         //Integer user_id = (Integer) request.getAttribute("Id");
-        String role = (String) request.getAttribute("role");
+        String role = "doctor";
         List<TimeSlot> timeSlots = doctorService.getTimeSlotById(role, id);
         return new ResponseEntity<>(timeSlots, HttpStatus.OK);
     }

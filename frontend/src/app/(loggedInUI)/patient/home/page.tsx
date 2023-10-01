@@ -8,7 +8,8 @@ function PatientHome() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
-    if (LoginCredentials.isPatientAndLoggedIn()) setIsLoggedIn(true)
+    /*if (LoginCredentials.isPatientAndLoggedIn())*/
+     setIsLoggedIn(true)
   }, [])
 
   return (
