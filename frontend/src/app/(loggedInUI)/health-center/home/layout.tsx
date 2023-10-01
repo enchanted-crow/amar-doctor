@@ -20,7 +20,7 @@ export default function DashboardLayoutHCenter({
   }
 
   return (
-    <div className="w-screen h-screen flex flex-col bg-gray-50 dark:bg-slate-900">
+    <div className="w-screen flex flex-col bg-gray-50 dark:bg-slate-900">
       {/* <!-- ========== HEADER ========== --> */}
       <header className="flex flex-wrap sm:justify-start sm:flex-nowrap w-full bg-white border-b border-gray-200 text-sm py-3 sm:py-0 dark:bg-gray-800 dark:border-gray-700">
         <nav className="relative w-11/12 mx-auto px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8" aria-label="Global">

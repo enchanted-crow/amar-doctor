@@ -1,12 +1,19 @@
+'use client';
+
 import { LoginCredentials, UserTypes } from "@/global/credentials"
 import { redirect } from 'next/navigation';
+import { useEffect, useState } from "react";
 
 function DoctorHome() {
-  // LoginCredentials.isLoggedIn = true
-  // LoginCredentials.userType = UserTypes.doctor
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  useEffect(() => {
+    if (LoginCredentials.isDoctorAndLoggedIn()) setIsLoggedIn(true)
+  }, [])
+
   return (
     <>
-      {(LoginCredentials.isLoggedIn == true && LoginCredentials.userType == UserTypes.doctor) ? redirect('/doctor/home/current-meeting')
+      {isLoggedIn ? redirect('/doctor/home/current-meeting')
         : redirect('/login')}
     </>
   )

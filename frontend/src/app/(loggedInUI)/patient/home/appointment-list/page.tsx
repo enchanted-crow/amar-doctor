@@ -6,27 +6,30 @@ import { useState } from 'react'
 
 interface UIInterface {
   "problem_id": string
-  "patient_id": string
-  "patient_name": string
-  "patient_age": string
+  "doctor_id": string
+  "doctor_name": string
   "problem_description": string
+  "appointment_day": string
+  "appointment_time": string
 }
 
-function PatientListDoctor() {
+function AppointmentListPatient() {
   const initiaPatientList: UIInterface[] = [
     {
       "problem_id": "",
-      "patient_id": "",
-      "patient_name": "",
-      "patient_age": "",
+      "doctor_id": "",
+      "doctor_name": "",
       "problem_description": "",
+      "appointment_day": "",
+      "appointment_time": "",
     },
     {
       "problem_id": "",
-      "patient_id": "",
-      "patient_name": "",
-      "patient_age": "",
+      "doctor_id": "",
+      "doctor_name": "",
       "problem_description": "",
+      "appointment_day": "",
+      "appointment_time": "",
     },
   ]
   const [patientList, setPatientList] = useState(initiaPatientList)
@@ -46,9 +49,10 @@ function PatientListDoctor() {
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                       <thead className="bg-gray-50 dark:bg-gray-700">
                         <tr>
-                          <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-gray-400">নাম</th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">বয়স</th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">বিবরণ</th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">ডাক্তারের নাম</th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">রোগের বিবরণ</th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">দিন</th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">সময়</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -56,13 +60,16 @@ function PatientListDoctor() {
                         {patientList.map((problem) => (
                           <tr key={`${problem.problem_id}`}>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                              {problem.patient_name}
+                              {problem.doctor_name}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                              {problem.patient_age}
+                              {problem.problem_description}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                              {problem.problem_description}
+                              {problem.appointment_day}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                              {problem.appointment_time}
                             </td>
                           </tr>
                         )
@@ -83,4 +90,4 @@ function PatientListDoctor() {
   );
 }
 
-export default PatientListDoctor
+export default AppointmentListPatient

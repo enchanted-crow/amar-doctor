@@ -24,7 +24,7 @@ export default function DashboardLayoutPatient({
   }
 
   return (
-    <div className="w-screen h-screen flex flex-col bg-gray-50 dark:bg-slate-900">
+    <div className="w-screen flex flex-col bg-gray-50 dark:bg-slate-900">
       {/* <!-- ========== HEADER ========== --> */}
       <header className="flex flex-wrap sm:justify-start sm:flex-nowrap w-full bg-white border-b border-gray-200 text-sm py-3 sm:py-0 dark:bg-gray-800 dark:border-gray-700">
         <nav className="relative w-11/12 mx-auto px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8 lg:ml-64" aria-label="Global">
@@ -50,7 +50,7 @@ export default function DashboardLayoutPatient({
                   <p className="font-medium">
                     চলমান মিটিং
                   </p>}
-                {(selectedPageName == 'all-appointments') &&
+                {(selectedPageName == 'appointment-list') &&
                   <p className="font-medium">
                     সকল অ্যাপয়েন্টমেন্ট
                   </p>}
@@ -128,13 +128,13 @@ export default function DashboardLayoutPatient({
 
                 <li>
                   <Link className={
-                    (selectedPageName == 'all-appointments') ? selectedPageClassName : unselectedPageClassName
+                    (selectedPageName == 'appointment-list') ? selectedPageClassName : unselectedPageClassName
                   }
-                    href="/patient/home/all-appointments"
-                    onClick={() => { setSelectedPageName("all-appointments") }}
+                    href="/patient/home/appointment-list"
+                    onClick={() => { setSelectedPageName("appointment-list") }}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                    <p className="ml-1 pt-1">সকল অ্যাপয়েন্টমেন্ট</p>
+                    <p className="ml-1 pt-1">অ্যাপয়েন্টমেন্ট লিস্ট</p>
                   </Link>
                 </li>
               </div>

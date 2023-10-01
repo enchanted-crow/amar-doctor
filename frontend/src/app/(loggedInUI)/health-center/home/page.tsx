@@ -1,12 +1,19 @@
+'use client';
+
 import { LoginCredentials, UserTypes } from "@/global/credentials"
 import { redirect } from 'next/navigation';
+import { useEffect, useState } from "react";
 
 function HCenterHome() {
-  // LoginCredentials.isLoggedIn = true
-  // LoginCredentials.userType = UserTypes.health_center
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  useEffect(() => {
+    if (LoginCredentials.isHCenterAndLoggedIn()) setIsLoggedIn(true)
+  }, [])
+
   return (
     <>
-      {(LoginCredentials.isLoggedIn == true && LoginCredentials.userType == UserTypes.health_center) ? redirect('/health-center/home/current-meeting')
+      {isLoggedIn ? redirect('/health-center/home/current-meeting')
         : redirect('/login')}
     </>
   )

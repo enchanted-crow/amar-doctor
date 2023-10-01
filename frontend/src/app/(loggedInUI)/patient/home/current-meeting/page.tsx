@@ -1,13 +1,59 @@
 'use client';
 
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
 import { useEffect } from 'react'
+
+interface UIInterface {
+  "doctor_name": string
+  "doctor_designation": string
+  "doctor_institution": string
+  "doctor_meeting_start_time": string
+  "problem_description": string
+  "hc_name": string
+  "appt_meeting_link": string
+}
 
 
 function CurrentMeetingPatient() {
-  useEffect(() => {
+  const initialUIInterface: UIInterface =
+  {
+    "doctor_name": "ড. মুজিবুল হক",
+    "doctor_designation": "প্রফেসর",
+    "doctor_institution": "ঢাকা মেডিকেল কলেজ হাসপাতাল, ঢাকা",
+    "doctor_meeting_start_time": "17:00",
+    "problem_description": "দীর্ঘদিন ধরে দুই পায়ে ব্যাথা।",
+    "hc_name": "হোপ হেলথ সেন্টার",
+    "appt_meeting_link": "https://www.google.com",
+  }
 
+  const [uiInterface, setUIInterface] = useState(initialUIInterface)
+
+  // ------------- TUBA -------------
+
+  function fetchUIInterfaceData(): UIInterface {
+    // fetch the required data - (dore nao ig apatoto ekta patient er at a time ektai appt thakbe or idk)
+    // feed the data into another UIInterface type variable 'data' and return it
+
+
+    let returned: UIInterface =
+    {
+      "doctor_name": "ড. মুজিবুল হক",
+      "doctor_designation": "প্রফেসর",
+      "doctor_institution": "ঢাকা মেডিকেল কলেজ হাসপাতাল, ঢাকা",
+      "doctor_meeting_start_time": "17:00",
+      "problem_description": "দীর্ঘদিন ধরে দুই পায়ে ব্যাথা।",
+      "hc_name": "হোপ হেলথ সেন্টার",
+      "appt_meeting_link": "https://www.google.com",
+    }
+    return returned
+  }
+
+  // ------------- TUBA -------------
+
+  useEffect(() => {
+    let uiData = fetchUIInterfaceData()
+    setUIInterface(uiData)
   }, []);
 
   return (
@@ -22,13 +68,14 @@ function CurrentMeetingPatient() {
                   <div className="p-4 md:p-10">
                     <div>
                       <p className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
-                        ড. মুজিবুল হক
+                        {uiInterface.doctor_name}
                       </p>
                       <p className="mt-2 text-gray-800 dark:text-gray-400">
-                        প্রফেসর
+
+                        {uiInterface.doctor_designation}
                       </p>
                       <p className="mt-2 text-gray-800 dark:text-gray-400">
-                        ঢাকা মেডিকেল কলেজ হাসপাতাল, ঢাকা
+                        {uiInterface.doctor_institution}
                       </p>
                     </div>
                   </div>
@@ -53,7 +100,7 @@ function CurrentMeetingPatient() {
                         বিবরণ
                       </h3> */}
                       <p className="mt-2 text-gray-800 dark:text-gray-400">
-                        দীর্ঘদিন ধরে দুই পায়ে ব্যাথা।
+                        {uiInterface.problem_description}
                       </p>
                     </div>
                   </div>
@@ -66,7 +113,7 @@ function CurrentMeetingPatient() {
                     <div className="flex flex-grow">
                       {/* <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="10" r="3" /><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z" /></svg> */}
                       <p className="text-2xl font-bold text-gray-800 dark:text-white justify-middle">
-                        হোপ হেলথ সেন্টার
+                        {uiInterface.hc_name}
                       </p>
                     </div>
                   </div>
@@ -98,7 +145,7 @@ function CurrentMeetingPatient() {
                       <p className="text-2xl font-bold text-gray-800 dark:text-white">
                         মিটিং লিংক
                       </p>
-                      <a className=" text-blue-500 hover:text-blue-700 dark:text-gray-400 align-start" href={"https://www.google.com"} target="_blank">
+                      <a className=" text-blue-500 hover:text-blue-700 dark:text-gray-400 align-start" href={uiInterface.appt_meeting_link} target="_blank">
                         মিটিং ওপেন করতে ক্লিক করুন
                       </a>
                       {/* <p className="mt-2 text-gray-800 dark:text-gray-400">

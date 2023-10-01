@@ -5,28 +5,77 @@ export enum UserTypes {
 }
 
 export class LoginCredentials {
-  private static _isLoggedIn: boolean = false;
-  private static _authToken: string = "";
-  private static _userType: UserTypes;
 
-  public static get authToken(): string {
-    return LoginCredentials._authToken;
-  }
-  public static set authToken(value: string) {
-    LoginCredentials._authToken = value;
+  // -------------- <PUBLIC> --------------
+
+  public static saveLogin(type: UserTypes, id: string) {
+    LoginCredentials.userType = type
+    LoginCredentials.id = id
   }
 
-  public static get userType(): UserTypes {
-    return LoginCredentials._userType;
-  }
-  public static set userType(value: UserTypes) {
-    LoginCredentials._userType = value;
+  public static clearLogin() {
+    LoginCredentials.clearStorage()
   }
 
   public static get isLoggedIn(): boolean {
-    return LoginCredentials._isLoggedIn;
+    let id = localStorage.getItem("id")
+    let userType = localStorage.getItem("userType")
+
+    if (!id || !userType) return false
+    return true;
   }
-  public static set isLoggedIn(value: boolean) {
-    LoginCredentials._isLoggedIn = value;
+
+  public static isDoctorAndLoggedIn() {
+    if (LoginCredentials.isLoggedIn) {
+      return localStorage.getItem("userType") == "doctor"
+    }
   }
+
+  public static isPatientAndLoggedIn() {
+    if (LoginCredentials.isLoggedIn) {
+      return localStorage.getItem("userType") == "patient"
+    }
+  }
+
+  public static isHCenterAndLoggedIn() {
+    if (LoginCredentials.isLoggedIn) {
+      return localStorage.getItem("userType") == "health_center"
+    }
+  }
+
+  public static get id(): string | null {
+    let id = localStorage.getItem("id")
+    if (id) return id
+    return null
+  }
+
+  public static get userType(): UserTypes | null {
+    let type = localStorage.getItem("userType")
+    if (type) {
+      if (type == "doctor") return UserTypes.doctor
+      if (type == "patient") return UserTypes.patient
+      if (type == "health_center") return UserTypes.health_center
+    }
+    return null
+  }
+
+  // -------------- </PUBLIC> --------------
+
+  private static clearStorage() {
+    if (localStorage.getItem("id")) localStorage.removeItem("id")
+    if (localStorage.getItem("userType")) localStorage.removeItem("userType")
+  }
+  private static set id(value: string) {
+    localStorage.setItem("id", value)
+  }
+  private static set userType(value: UserTypes) {
+    let toStore = ""
+
+    if (value == UserTypes.doctor) toStore = "doctor"
+    if (value == UserTypes.patient) toStore = "patient"
+    if (value == UserTypes.health_center) toStore = "health_center"
+
+    localStorage.setItem("id", toStore)
+  }
+
 }
