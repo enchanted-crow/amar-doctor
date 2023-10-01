@@ -7,6 +7,8 @@ import com.DU_Yellow.amardoctorapi.domain.Patient;
 import com.DU_Yellow.amardoctorapi.domain.TimeSlot;
 import com.DU_Yellow.amardoctorapi.services.HealthCenterService;
 import com.DU_Yellow.amardoctorapi.services.PatientService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.*;
 @CrossOrigin
 @RestController
@@ -54,22 +57,36 @@ public class HealthCenterResource {
             photo = null;
         }
 
-        List<Map<String, Object>> timeSlotList = (List<Map<String, Object>>) hcMap.get("time_slot");
-        List<TimeSlot> timeSlots = new ArrayList<>();
+        String jsonString = (String) hcMap.get("time_slot");
 
-        for (Map<String, Object> timeSlotMap : timeSlotList) {
-            String time = (String) timeSlotMap.get("time");
-            String maxCount = (String) timeSlotMap.get("max_count");
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
 
-            TimeSlot timeSlot = new TimeSlot();
-            timeSlot.setTime(time);
-            timeSlot.setMax_count(maxCount);
+            // Use TypeReference to specify the target data structure (in this case, List)
+            List<TimeSlot> timeSlots = objectMapper.readValue(jsonString, new TypeReference<List<TimeSlot>>() {});
+            HealthCenter hc = hcService.registerUser(email, password, name, contact_no, division, district, upozilla, photo, timeSlots);
+            return new ResponseEntity<>(generateJWTToken(hc), HttpStatus.OK);
 
-            timeSlots.add(timeSlot);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        HealthCenter hc = hcService.registerUser(email, password, name, contact_no, division, district, upozilla, photo, timeSlots);
-        return new ResponseEntity<>(generateJWTToken(hc), HttpStatus.OK);
+
+
+//        List<Map<String, Object>> timeSlotList = (List<Map<String, Object>>) hcMap.get("time_slot");
+//        List<TimeSlot> timeSlots = new ArrayList<>();
+//
+//        for (Map<String, Object> timeSlotMap : timeSlotList) {
+//            String time = (String) timeSlotMap.get("time");
+//            String maxCount = (String) timeSlotMap.get("max_count");
+//
+//            TimeSlot timeSlot = new TimeSlot();
+//            timeSlot.setTime(time);
+//            timeSlot.setMax_count(maxCount);
+//
+//            timeSlots.add(timeSlot);
+//        }
+    return null;
 
     }
 

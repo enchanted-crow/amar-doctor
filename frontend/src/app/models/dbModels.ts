@@ -16,7 +16,7 @@ export interface Doctor {
   bmdc_registration_year: string | null;
   bio: string | null;
   photo: number[] | null;
-  time_slot: TimeSlot[] | null;
+  timeSlot: TimeSlot[] | null;
 }
 
 export interface TimeSlot {

@@ -16,36 +16,51 @@ const Login = () => {
 
     let api_url = ''
     if (acc_type == "রোগী") {
-      api_url = '/api/patient/login'
+      api_url = 'http://localhost:8080/api/patient/login'
     }
     if (acc_type == "ডাক্তার") {
-      api_url = '/api/doctor/login'
+      api_url = 'http://localhost:8080/api/doctor/login'
     }
     if (acc_type == "হেলথ সেন্টার") {
-      api_url = '/api/health-center/login'
+      api_url = 'http://localhost:8080/api/healthCenter/login'
     }
 
     const response = await fetch(api_url, {
       method: 'POST',
-      body: formData,
+      headers: {
+        'Content-Type': 'application/json', // Set the correct Content-Type
+      },
+      body: JSON.stringify(Object.fromEntries(formData)),
     })
 
+    alert("requesting")
     // Handle response if necessary
-    // Save auth token, handle islogged in
-
-    if (acc_type == "রোগী") {
-      LoginCredentials.userType = UserTypes.patient
-    }
-    if (acc_type == "ডাক্তার") {
-      LoginCredentials.userType = UserTypes.doctor
-    }
-    if (acc_type == "হেলথ সেন্টার") {
-      LoginCredentials.userType = UserTypes.health_center
-    }
-
     const data = await response.json()
     console.log(JSON.stringify(Object.fromEntries(formData)))
     console.log(data)
+
+    const token = data["token"]
+    console.log(token)
+
+    if (token) {
+      LoginCredentials.authToken = token
+      LoginCredentials.isLoggedIn = true
+      if (acc_type == "রোগী") {
+        LoginCredentials.userType = UserTypes.patient
+      }
+      if (acc_type == "ডাক্তার") {
+        LoginCredentials.userType = UserTypes.doctor
+      }
+      if (acc_type == "হেলথ সেন্টার") {
+        LoginCredentials.userType = UserTypes.health_center
+      }
+      console.log("hoise")
+      alert("login successful")
+    }
+    else{
+      alert("Error occured")
+    }
+
   }
 
   return (

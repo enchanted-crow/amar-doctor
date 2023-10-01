@@ -4,8 +4,9 @@ package com.DU_Yellow.amardoctorapi.resources;
 import com.DU_Yellow.amardoctorapi.Constant;
 import com.DU_Yellow.amardoctorapi.domain.Doctor;
 import com.DU_Yellow.amardoctorapi.domain.TimeSlot;
-import com.DU_Yellow.amardoctorapi.repositories.DoctorRepository;
 import com.DU_Yellow.amardoctorapi.services.DoctorService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.*;
 @CrossOrigin
 @RestController
@@ -58,22 +60,21 @@ public class DoctorResource {
             photo = null;
         }
 
-        List<Map<String, Object>> timeSlotList = (List<Map<String, Object>>) doctorMap.get("time_slot");
-        List<TimeSlot> timeSlots = new ArrayList<>();
+        String jsonString = (String) doctorMap.get("time_slot");
 
-        for (Map<String, Object> timeSlotMap : timeSlotList) {
-            String time = (String) timeSlotMap.get("time");
-            String maxCount = (String) timeSlotMap.get("max_count");
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
 
-            TimeSlot timeSlot = new TimeSlot();
-            timeSlot.setTime(time);
-            timeSlot.setMax_count(maxCount);
+            // Use TypeReference to specify the target data structure (in this case, List)
+            List<TimeSlot> timeSlots = objectMapper.readValue(jsonString, new TypeReference<List<TimeSlot>>() {});
+            Doctor doctor = doctorService.registerUser(email, password, name, contact_no, doctor_type, department, designation, institution, degrees, chamber_location, bmdc_registration_no, bmdc_registration_year, bio, photo, timeSlots);
+            return new ResponseEntity<>(generateJWTToken(doctor), HttpStatus.OK);
 
-            timeSlots.add(timeSlot);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        Doctor doctor = doctorService.registerUser(email, password, name, contact_no, doctor_type, department, designation, institution, degrees, chamber_location, bmdc_registration_no, bmdc_registration_year, bio, photo, timeSlots);
-        return new ResponseEntity<>(generateJWTToken(doctor), HttpStatus.OK);
+        return null;
 
     }
 
@@ -109,8 +110,8 @@ public class DoctorResource {
 
 
     @GetMapping("/doctorsByDepartmentAndType")
-    public List<Doctor> getDoctorsByDepartment(@RequestParam String type, @RequestParam String departmentName) {
-        return doctorService.findDoctorsByDepartment(type, departmentName);
+    public List<Doctor> getDoctorsByDepartment(@RequestParam String type, @RequestParam String dept) {
+        return doctorService.findDoctorsByDepartment(type, dept);
     }
 
     @GetMapping("/timeSlot") //read
@@ -129,12 +130,15 @@ public class DoctorResource {
         return new ResponseEntity<>(timeSlots, HttpStatus.OK);
     }
 
+
+
     @GetMapping("/departmentSuggestion") //read
-    public ResponseEntity<String> getDepartmentSuggestion(HttpServletRequest request, @RequestBody Map<String, String> problem) {
-        String role = (String) request.getAttribute("role");
-        String problem_desc = (String) problem.get("problem");
-        String suggestion = doctorService.getDepartmentSuggestion(role, problem_desc);
-        return new ResponseEntity<>(suggestion, HttpStatus.OK);
+    public String getDepartmentSuggestion(@RequestParam String problem) {
+        //String role = (String) request.getAttribute("role");
+        String role = "patient";
+        //String problem_desc = (String) problem.get("problem");
+        String suggestion = doctorService.getDepartmentSuggestion(role, problem);
+        return suggestion;
     }
 
 

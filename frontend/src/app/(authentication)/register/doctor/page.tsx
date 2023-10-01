@@ -7,7 +7,34 @@ import { dict } from '@/global/translation';
 import Link from 'next/link';
 
 const doctor_type = ["MBBS", "BDS"];
-const departments = ["A", "hajaribag"];
+const departments = [
+  "Medicine",
+  "Neuromedicine",
+  "Physical Medicine",
+  "Surgery",
+  "Neurosurgery",
+  "Pediatric Surgery",
+  "Orthopedic Surgery",
+  "Burn Plastic & Reconstructive Surgery",
+  "Dermatology",
+  "Nephrology",
+  "Psychiatry",
+  "Cardiology & CCU",
+  "Pediatrics",
+  "Medical Oncology",
+  "Gastroenterology",
+  "Radiology & Imaging",
+  "Anesthesiology",
+  "Traumatology",
+  "Urology",
+  "ENT",
+  "Ophthalmology",
+  "Gynae & Obstetrics",
+  "Transfusion Medicine",
+  "Pediatric Nephrology",
+  "Hepatology",
+  "Neurology"
+];
 const genders = ["পুরুষ", "মহিলা", "অন্যান্য"];
 const days = ["রবিবার", "সোমবার", "মঙ্গলবার", "বুধবার", "বৃহস্পতিবার", "শুক্রবার", "শনিবার"];
 const times = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
@@ -190,15 +217,30 @@ export default function RegisterDoctor() {
         formData.append(apiAttrName, data)
     }
 
-    const response = await fetch('/api/doctor/register', {
+    const response = await fetch('http://localhost:8080/api/doctor/register', {
       method: 'POST',
-      body: formData,
+      headers: {
+        'Content-Type': 'application/json', // Set the correct Content-Type
+      },
+      body: JSON.stringify(Object.fromEntries(formData)),
     })
 
+    alert("requesting")
     // Handle response if necessary
     const data = await response.json()
     console.log(JSON.stringify(Object.fromEntries(formData)))
-    // console.log(data)
+    console.log(data)
+
+    const token = data["token"]
+    console.log(token)
+
+    if (token) {
+      console.log("hoise")
+      alert("registration successful")
+    }
+    else{
+      alert("Error occured")
+    }
   }
 
 

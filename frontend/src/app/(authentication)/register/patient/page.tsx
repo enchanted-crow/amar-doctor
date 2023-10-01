@@ -36,8 +36,7 @@ export default function RegisterPatient() {
   const [upozilla, setUpozilla] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState(new Date("2000-01-01"));
   const [profileImage, setProfileImage] = useState('../../../../public/images/signup/user_profile_picture_default.jpg');
-  const [toRedirectLogin, setToRedirectLogin] = useState(false)
-
+  
 
   // Function to handle input field change and update state
   const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>, stateUpdater: (value: string) => void): void => {
@@ -88,7 +87,7 @@ export default function RegisterPatient() {
         formData.append(apiAttrName, data)
     }
 
-    const response = await fetch('http://amardoctor.onrender.com/api/patient/register', {
+    const response = await fetch('http://localhost:8080/api/patient/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json', // Set the correct Content-Type
@@ -105,12 +104,12 @@ export default function RegisterPatient() {
     const token = data["token"]
     console.log(token)
 
-    alert("a3")
-
     if (token) {
-      setToRedirectLogin(true)
       console.log("hoise")
-      alert("ok")
+      alert("registration successful")
+    }
+    else{
+      alert("Error occured")
     }
   }
 
