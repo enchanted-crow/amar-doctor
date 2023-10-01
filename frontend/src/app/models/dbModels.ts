@@ -45,7 +45,7 @@ export interface HealthCenter {
   district: string | null;
   upozilla: string | null;
   photo: number[] | null;
-  time_slot: TimeSlot[] | null;
+  timeSlot: TimeSlot[] | null;
 }
 
 export interface Prescription {

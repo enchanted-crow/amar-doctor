@@ -6,42 +6,13 @@ import { dict } from '@/global/translation';
 import Link from 'next/link';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Doctor, Appointment, HealthCenter, Patient, Prescription, Problem, TimeSlot } from '@/app/models/dbModels';
-import { LoginCredentials } from '@/global/credentials';
-import { url } from 'inspector';
 
 
-const divisions = ["ময়মনসিংহ", "বরিশাল", "চট্টগ্রাম", "ঢাকা", "খুলনা", "রাজশাহী", "রংপুর", "সিলেট"];
-const upozillas = ["ময়মনসিংহ সদর", "মুক্তাগাছা", "ভালুকা ", "হালুয়াঘাট", "গৌরীপুর", "ধোবাউড়া", "ফুলবাড়িয়া ", "গফরগাঁও", "ত্রিশাল", "ফুলপুর", "নান্দাইল", "ঈশ্বরগঞ্জ"];
-const districts = ["ময়মনসিংহ", "নেত্রকোণা", "শেরপুর", "জামালপুর"];
-const doctor_type = ["MBBS", "BDS"];
-const departments = [
-  "Medicine",
-  "Neuromedicine",
-  "Physical Medicine",
-  "Surgery",
-  "Neurosurgery",
-  "Pediatric Surgery",
-  "Orthopedic Surgery",
-  "Burn Plastic & Reconstructive Surgery",
-  "Dermatology",
-  "Nephrology",
-  "Psychiatry",
-  "Cardiology & CCU",
-  "Pediatrics",
-  "Medical Oncology",
-  "Gastroenterology",
-  "Radiology & Imaging",
-  "Anesthesiology",
-  "Traumatology",
-  "Urology",
-  "ENT",
-  "Ophthalmology",
-  "Gynae & Obstetrics",
-  "Transfusion Medicine",
-  "Pediatric Nephrology",
-  "Hepatology",
-  "Neurology"
-];
+const divisions = ["পুরুষ", "মহিলা", "অন্যান্য"];
+const upozillas = ["A", "hajaribag"];
+const districts = ["Dhaka", "Rangpur"];
+const doctor_type = ["সাধারণ (MBBS)", "ডেন্টাল (BDS)"];
+const departments = ["A", "hajaribag"];
 
 const classnames = {
   "textbox": "py-2 px-3 pr-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 placeholder-gray-500 placeholder-opacity-90"
@@ -115,7 +86,7 @@ export default function NewAppointmentPatient() {
       district: "",
       upozilla: "",
       photo: [],
-      time_slot: [
+      timeSlot: [
         { time: "", max_count: 0 },
       ] as TimeSlot[],
     },
@@ -129,7 +100,7 @@ export default function NewAppointmentPatient() {
       district: "",
       upozilla: "",
       photo: [],
-      time_slot: [
+      timeSlot: [
         { time: "", max_count: 0 },
       ] as TimeSlot[],
     },
@@ -219,44 +190,21 @@ export default function NewAppointmentPatient() {
       setAISuggestionFetched(true)
       return
     }
-    else{
-      // fetch the ai responmse
-      // store that response in aiSuggestion using setAISuggestion
-      const response = await fetch('http://localhost:8080/api/doctor/departmentSuggestion?problem=headache', {
-      method: 'GET',
-    })
 
-    alert("Generating")
-    // Handle response if necessary
-    const data = await response.json()
-    //console.log(JSON.stringify(Object.fromEntries(formData)))
-    console.log(data)
-    setAISuggestion(data.toString())
-    console.log(aiSuggestion);
+    // fetch the ai responmse
+    // store that response in aiSuggestion using setAISuggestion
+
     setAISuggestionFetched(true)
-
-    }
-    
   }
 
   async function handleFetchDoctorsByDept() {
     console.log(doctorType)
     console.log(department)
-    const url = 'http://localhost:8080/api/doctor/doctorsByDepartmentAndType?type=MBBS&dept=Medicine';
 
     // fetch the doctor info
     // store that info into suggestedDoctors
-    const response = await fetch(url, {
-      method: 'GET',
-    })
-      alert("Searching")
-      // Handle response if necessary
-      const data = await response.json()
-      console.log(data)
-      //console.log(JSON.stringify(Object.fromEntries(formData)))
-      setSuggestedDoctors(data)
-      console.log(suggestedDoctors)
-      setDoctorFetched(true)
+
+    setDoctorFetched(true)
   }
 
   async function handleFetchHCenters() {
@@ -264,26 +212,8 @@ export default function NewAppointmentPatient() {
     console.log(district)
     console.log(upozilla)
 
-    const jwt = 'eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2OTYxMzQ1NjksImV4cCI6MTY5NjE0ODk2OSwiSWQiOjMwMiwiZW1haWwiOiJtdWppYnVsMTIzQGdtYWlsLmNvbSIsInJvbGUiOiJwYXRpZW50In0.SM0-VO6GQGvf2rQGU7TmsnlU-c6RC6_u_NGuPd_ShyY'
-
-    
-
     // fetch the HCenter info
     // store that info into suggestedHCenters
-    const response = await fetch('http://localhost:8080/api/healthCenter/healthCenterSuggestion', {
-      method: 'GET',
-      headers: {
-        'Authorization' : `Bearer ${jwt}`,
-        //'Content-Type': 'application/json', // Set the correct Content-Type
-      },
-      
-    })
-      alert("Searching")
-      // Handle response if necessary
-      const data = await response.json()
-      //console.log(JSON.stringify(Object.fromEntries(formData)))
-      console.log(data)
-
 
     setHCenterFetched(true)
   }

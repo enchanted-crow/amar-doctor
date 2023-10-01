@@ -8,9 +8,9 @@ export class LoginCredentials {
 
   // -------------- <PUBLIC> --------------
 
-  public static saveLogin(type: UserTypes, id: string) {
+  public static saveLogin(type: UserTypes, token: string) {
     LoginCredentials.userType = type
-    LoginCredentials.id = id
+    LoginCredentials.token = token
   }
 
   public static clearLogin() {
@@ -18,10 +18,10 @@ export class LoginCredentials {
   }
 
   public static get isLoggedIn(): boolean {
-    let id = localStorage.getItem("id")
+    let token = localStorage.getItem("token")
     let userType = localStorage.getItem("userType")
 
-    if (!id || !userType) return false
+    if (!token || !userType) return false
     return true;
   }
 
@@ -43,9 +43,9 @@ export class LoginCredentials {
     }
   }
 
-  public static get id(): string | null {
-    let id = localStorage.getItem("id")
-    if (id) return id
+  public static get token(): string | null {
+    let token = localStorage.getItem("token")
+    if (token) return token
     return null
   }
 
@@ -62,11 +62,11 @@ export class LoginCredentials {
   // -------------- </PUBLIC> --------------
 
   private static clearStorage() {
-    if (localStorage.getItem("id")) localStorage.removeItem("id")
+    if (localStorage.getItem("token")) localStorage.removeItem("token")
     if (localStorage.getItem("userType")) localStorage.removeItem("userType")
   }
-  private static set id(value: string) {
-    localStorage.setItem("id", value)
+  private static set token(value: string) {
+    localStorage.setItem("token", value)
   }
   private static set userType(value: UserTypes) {
     let toStore = ""
@@ -75,7 +75,7 @@ export class LoginCredentials {
     if (value == UserTypes.patient) toStore = "patient"
     if (value == UserTypes.health_center) toStore = "health_center"
 
-    localStorage.setItem("id", toStore)
+    localStorage.setItem("token", toStore)
   }
 
 }
